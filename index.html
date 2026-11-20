@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ramp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#101828; --ink-2:#344054; --ink-3:#667085; --ink-4:#98a2b3;
+    --line:#e4e7ec; --line-2:#f2f4f7; --bg:#f6f8fa; --card:#fff;
+    --navy:#0b3b6f; --azure:#1565d8; --azure-soft:#eaf1fd;
+    --amber:#b54708; --amber-soft:#fef6e7; --red:#b3261e; --red-soft:#fdecea;
+    --green:#0f7156; --green-soft:#e8f5f0; --violet:#5b3fb5; --violet-soft:#f0ecfc;
+    --r:14px; --shadow:0 1px 2px rgba(16,24,40,.05),0 1px 3px rgba(16,24,40,.06);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased;font-size:14px;line-height:1.5}
+  button{font-family:inherit;font-size:inherit;cursor:pointer}
+  h1,h2,h3,h4{margin:0;letter-spacing:-.01em}
+  .hide{display:none!important}
+
+  .topbar{position:sticky;top:0;z-index:60;background:#fff;border-bottom:1px solid var(--line);
+    padding:0 20px;display:flex;align-items:center;gap:18px;height:58px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:17px}
+  .mark{width:28px;height:28px;border-radius:8px;background:linear-gradient(145deg,#1565d8,#0b3b6f);
+    display:grid;place-items:center;color:#fff;font-weight:800;font-size:15px}
+  .brand small{display:block;font-weight:500;font-size:11px;color:var(--ink-3)}
+  .seg{margin-left:auto;display:flex;background:var(--line-2);border-radius:10px;padding:3px;gap:2px}
+  .seg button{border:0;background:transparent;padding:7px 15px;border-radius:8px;font-weight:600;color:var(--ink-3)}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:var(--shadow)}
+  .who{display:flex;align-items:center;gap:9px;padding-left:16px;border-left:1px solid var(--line)}
+  .av{width:30px;height:30px;border-radius:50%;background:var(--violet-soft);color:var(--violet);
+    display:grid;place-items:center;font-weight:700;font-size:12px}
+  .who div{font-size:12px;line-height:1.35}.who b{font-size:13px}.who span{color:var(--ink-3)}
+
+  .wrap{max-width:1240px;margin:0 auto;padding:18px 20px 70px}
+  .grid{display:grid;gap:16px}
+  .c2{grid-template-columns:1.55fr 1fr}.c3{grid-template-columns:repeat(3,1fr)}.c4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:900px){.c2,.c3,.c4{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--shadow)}
+  .card h3{font-size:14px;margin-bottom:3px}
+  .card .sub{color:var(--ink-3);font-size:12.5px;margin-bottom:14px}
+  .sechead{display:flex;align-items:baseline;gap:10px;margin:24px 0 12px;flex-wrap:wrap}
+  .sechead h2{font-size:15px}.sechead p{margin:0;color:var(--ink-3);font-size:12.5px}
+
+  .pill{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap}
+  .p-blue{background:var(--azure-soft);color:var(--azure)}.p-amber{background:var(--amber-soft);color:var(--amber)}
+  .p-red{background:var(--red-soft);color:var(--red)}.p-green{background:var(--green-soft);color:var(--green)}
+  .p-grey{background:var(--line-2);color:var(--ink-3)}.p-violet{background:var(--violet-soft);color:var(--violet)}
+  .btn{border:1px solid var(--line);background:#fff;color:var(--ink-2);padding:8px 13px;border-radius:9px;font-weight:600;transition:.12s}
+  .btn:hover{background:var(--line-2)}
+  .btn.pri{background:var(--navy);border-color:var(--navy);color:#fff}.btn.pri:hover{background:#0a3260}
+  .btn.sm{padding:6px 11px;font-size:12.5px}.btn:disabled{opacity:.5;cursor:default}
+  .note{background:var(--line-2);border-radius:10px;padding:11px 13px;font-size:12.5px;color:var(--ink-2)}
+  .kv{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line-2);font-size:13px}
+  .kv:last-child{border:0}
+  .mono{font-variant-numeric:tabular-nums}
+
+  /* ---------- HUD ---------- */
+  .hud{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);
+    border-radius:var(--r);padding:12px 16px;box-shadow:var(--shadow);margin-bottom:14px;flex-wrap:wrap}
+  .hud .t{font-size:15px;font-weight:700}
+  .hud .t span{display:block;font-size:12px;font-weight:500;color:var(--ink-3)}
+  .hud .stats{margin-left:auto;display:flex;gap:9px;flex-wrap:wrap}
+  .stat{background:var(--line-2);border-radius:10px;padding:7px 13px;text-align:center;min-width:76px}
+  .stat b{display:block;font-size:17px;line-height:1.15}
+  .stat span{font-size:10.5px;color:var(--ink-3)}
+  .stat.flame{background:#fff1e6}.stat.flame b{color:#c2410c}
+
+  /* ---------- map ---------- */
+  .mapwrap{background:linear-gradient(180deg,#eaf3f0,#e7eef3);border:1px solid var(--line);
+    border-radius:var(--r);overflow:hidden;position:relative;box-shadow:var(--shadow)}
+  svg.map{display:block;width:100%;height:auto}
+  .bld{cursor:pointer;transform-box:fill-box;transform-origin:center bottom;transition:transform .18s ease}
+  .bld:hover{transform:translateY(-7px) scale(1.015)}
+  .bld:focus{outline:none}
+  .bld:focus-visible{outline:none;transform:translateY(-7px)}
+  .bld.locked{opacity:.5}
+  .plaque{pointer-events:none}
+  .plaque text{font-family:Inter,sans-serif}
+  .legend{position:absolute;left:14px;bottom:12px;display:flex;gap:12px;background:rgba(255,255,255,.9);
+    border-radius:10px;padding:7px 12px;font-size:11.5px;color:var(--ink-2);backdrop-filter:blur(4px);flex-wrap:wrap}
+  .legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+  .maptip{position:absolute;right:14px;top:12px;background:rgba(16,24,40,.85);color:#fff;border-radius:9px;
+    padding:7px 12px;font-size:11.5px}
+
+  /* ---------- drawer ---------- */
+  .backdrop{position:fixed;inset:0;background:rgba(16,24,40,.42);z-index:70;opacity:0;pointer-events:none;transition:.22s}
+  .backdrop.on{opacity:1;pointer-events:auto}
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:490px;max-width:94vw;background:#fff;z-index:80;
+    transform:translateX(102%);transition:transform .26s cubic-bezier(.3,.8,.3,1);display:flex;flex-direction:column;
+    box-shadow:-8px 0 40px rgba(16,24,40,.18)}
+  .drawer.on{transform:none}
+  .dhead{padding:17px 20px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;gap:12px}
+  .dhead h2{font-size:17px;margin-bottom:4px}
+  .dhead p{margin:0;font-size:12.5px;color:var(--ink-3)}
+  .dclose{margin-left:auto;border:0;background:var(--line-2);width:30px;height:30px;border-radius:8px;color:var(--ink-3);font-size:15px}
+  .dbody{padding:18px 20px 40px;overflow-y:auto;flex:1}
+  .dbody h4{font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-4);margin:20px 0 9px}
+  .dbody h4:first-child{margin-top:0}
+
+  .check{display:flex;gap:11px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line-2)}
+  .check:last-child{border:0}
+  .box{flex:0 0 auto;width:19px;height:19px;border-radius:6px;border:2px solid var(--line);margin-top:1px;
+    display:grid;place-items:center;font-size:11px;color:#fff;cursor:pointer}
+  .box.on{background:var(--green);border-color:var(--green)}
+  .check p{margin:0;font-size:13px;font-weight:500}
+  .check span{font-size:11.5px;color:var(--ink-4)}
+  .check .xp{margin-left:auto;font-size:11px;color:var(--ink-4);white-space:nowrap}
+  .check.block{background:var(--amber-soft);border-radius:9px;padding:10px 11px;border:0;margin:4px 0}
+
+  .streak{display:flex;gap:7px;margin:12px 0 4px}
+  .sd{flex:1;text-align:center}
+  .sd i{display:block;height:34px;border-radius:9px;background:var(--line-2);display:grid;place-items:center;
+    font-size:15px;font-style:normal}
+  .sd.hit i{background:#ffedd5}
+  .sd.now i{background:var(--azure-soft);box-shadow:0 0 0 2px var(--azure) inset}
+  .sd span{font-size:10px;color:var(--ink-4)}
+
+  .q{margin-bottom:14px}
+  .q label{display:block;font-weight:600;font-size:13px;margin-bottom:8px}
+  .opts{display:flex;gap:7px;flex-wrap:wrap}
+  .opt{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 12px;font-size:13px;color:var(--ink-2)}
+  .opt.on{border-color:var(--navy);background:var(--navy);color:#fff}
+  .face{font-size:19px;padding:5px 11px}
+  textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font-family:inherit;font-size:13px;resize:vertical;min-height:58px}
+  .anon{display:flex;gap:9px;align-items:flex-start;background:var(--violet-soft);color:#4a3496;
+    border-radius:10px;padding:11px 12px;font-size:12px;margin-bottom:14px}
+  .anon b{display:block;margin-bottom:2px}
+
+  .chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:11px}
+  .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:12.5px;color:var(--ink-2)}
+  .chip:hover{border-color:var(--azure);color:var(--azure)}
+  .askrow{display:flex;gap:8px}
+  .askrow input{flex:1;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:13px}
+  .answer{margin-top:12px;border-left:3px solid var(--azure);background:var(--azure-soft);border-radius:0 10px 10px 0;padding:12px 14px;font-size:13px}
+  .answer .meta{margin-top:9px;font-size:11.5px;color:var(--azure);font-weight:600}
+
+  .feed li{list-style:none;display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--line-2)}
+  .feed li:last-child{border:0}
+  .feed .dot{flex:0 0 auto;width:22px;height:22px;border-radius:50%;background:var(--green-soft);color:var(--green);
+    display:grid;place-items:center;font-size:11px;margin-top:1px}
+  .feed p{margin:0;font-size:13px}.feed span{font-size:11.5px;color:var(--ink-4)}
+  .feed li.fresh{background:var(--green-soft);border-radius:9px;padding:11px;margin:4px 0}
+
+  .person{display:flex;gap:11px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line-2)}
+  .person:last-child{border:0}
+  .pav{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:12px}
+  .person b{font-size:13px;display:block}.person span{font-size:11.5px;color:var(--ink-3)}
+
+  .evt{display:flex;gap:11px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line-2)}
+  .evt:last-child{border:0}
+  .evt .d{flex:0 0 44px;text-align:center;background:var(--line-2);border-radius:9px;padding:5px 0}
+  .evt .d b{display:block;font-size:15px;line-height:1}.evt .d span{font-size:10px;color:var(--ink-3)}
+  .evt .bd{flex:1}.evt .bd b{font-size:13px}.evt .bd p{margin:1px 0 0;font-size:11.5px;color:var(--ink-3)}
+  .stars{display:flex;gap:3px}
+  .star{border:0;background:none;font-size:15px;padding:0 1px;color:#d0d5dd;line-height:1}
+  .star.on{color:#f59e0b}
+
+  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .tile{border:1px solid var(--line);border-radius:11px;padding:12px}
+  .tile b{display:block;font-size:12.5px;margin-bottom:3px}
+  .tile p{margin:0;font-size:11.5px;color:var(--ink-3)}
+  .tile.go:hover{border-color:var(--azure);cursor:pointer}
+
+  /* wrapped */
+  .wrapped{background:linear-gradient(160deg,#4c1d95,#9333ea 55%,#f97316);border-radius:14px;padding:20px;color:#fff}
+  .wrapped .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;font-weight:700}
+  .wrapped h3{font-size:25px;margin:5px 0 3px;letter-spacing:-.02em}
+  .wrapped .sub2{font-size:12.5px;opacity:.85;margin-bottom:16px}
+  .wcards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .wc{background:rgba(255,255,255,.14);border-radius:12px;padding:13px;backdrop-filter:blur(3px)}
+  .wc b{display:block;font-size:27px;line-height:1.05;letter-spacing:-.02em}
+  .wc span{font-size:11.5px;opacity:.9;display:block;margin-top:3px}
+  .wc.wide{grid-column:1/-1}
+  .wc.wide b{font-size:19px}
+
+  /* program */
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--shadow)}
+  .kpi .lab{font-size:12px;color:var(--ink-3);font-weight:500}
+  .kpi .val{font-size:28px;font-weight:700;margin:7px 0 2px;letter-spacing:-.02em}
+  .kpi .val small{font-size:14px;font-weight:600;color:var(--ink-3)}
+  .kpi .delta{font-size:11.5px;font-weight:600}
+  .up{color:var(--green)}.down{color:var(--red)}
+  .bar{height:5px;background:var(--line-2);border-radius:99px;overflow:hidden;margin-top:11px}
+  .bar i{display:block;height:100%;border-radius:99px;background:var(--azure)}
+  .sig{padding:12px 0;border-bottom:1px solid var(--line-2)}.sig:last-child{border:0}
+  .sig .top{display:flex;align-items:baseline;gap:10px;margin-bottom:7px}
+  .sig .nm{font-weight:600;font-size:13px}
+  .sig .src{font-size:11px;color:var(--ink-4);margin-left:auto;white-space:nowrap}
+  .track{height:7px;background:var(--line-2);border-radius:99px;position:relative}
+  .track i{position:absolute;inset:0 auto 0 0;border-radius:99px}
+  .track b{position:absolute;top:-4px;width:2px;height:15px;background:var(--ink);opacity:.35}
+  .sigfoot{display:flex;justify-content:space-between;margin-top:6px;font-size:11.5px;color:var(--ink-3)}
+  .flag{border:1px solid var(--line);border-radius:12px;padding:15px;margin-bottom:12px}
+  .flag.hi{border-left:4px solid var(--red)}.flag.md{border-left:4px solid var(--amber)}.flag.lo{border-left:4px solid var(--azure)}
+  .flag .hd{display:flex;align-items:center;gap:9px;margin-bottom:9px;flex-wrap:wrap}
+  .flag h4{font-size:13.5px;margin:0;text-transform:none;letter-spacing:0;color:var(--ink)}
+  .flag .ev{display:flex;flex-direction:column;gap:5px;margin:10px 0;font-size:12.5px;color:var(--ink-2)}
+  .flag .ev div{display:flex;gap:8px}.flag .ev i{color:var(--ink-4);font-style:normal;flex:0 0 72px}
+  .act{background:var(--line-2);border-radius:10px;padding:12px;margin-top:11px}
+  .act .t{font-size:11px;font-weight:700;color:var(--ink-3);letter-spacing:.04em;margin-bottom:5px}
+  .act p{margin:0 0 9px;font-size:13px;font-weight:600}
+  .act .row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:11.5px;color:var(--ink-3)}
+  .act .row .btn{margin-left:auto}
+  .flag.actioned{opacity:.62}.flag.actioned .act{background:var(--green-soft)}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-4);
+    padding:0 10px 9px 0;font-weight:600;border-bottom:1px solid var(--line)}
+  td{padding:11px 10px 11px 0;border-bottom:1px solid var(--line-2);vertical-align:middle}
+  tr:last-child td{border:0}
+  td.num{text-align:right;font-variant-numeric:tabular-nums;padding-right:14px}
+  .mini{height:6px;border-radius:99px;background:var(--line-2);width:70px;display:inline-block;overflow:hidden;vertical-align:middle}
+  .mini i{display:block;height:100%}
+  .theme{display:flex;gap:13px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line-2)}
+  .theme:last-child{border:0}
+  .theme .cnt{flex:0 0 50px;text-align:center;background:var(--line-2);border-radius:9px;padding:7px 4px}
+  .theme .cnt b{display:block;font-size:17px;line-height:1}.theme .cnt span{font-size:10px;color:var(--ink-3)}
+  .theme .bd{flex:1}.theme .bd b{font-size:13px}.theme .bd p{margin:3px 0 0;font-size:12.5px;color:var(--ink-3)}
+  .gov{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  @media(max-width:900px){.gov{grid-template-columns:1fr 1fr}}
+  .gov div b{display:block;font-size:12.5px;margin-bottom:3px}
+  .gov div p{margin:0;font-size:12px;color:var(--ink-3)}
+
+  .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,110px);z-index:95;background:var(--ink);color:#fff;
+    padding:12px 17px;border-radius:11px;font-size:13px;display:flex;gap:10px;align-items:center;
+    box-shadow:0 10px 30px rgba(16,24,40,.25);transition:transform .28s ease;max-width:92vw}
+  .toast.show{transform:translate(-50%,0)}
+  .toast button{background:rgba(255,255,255,.16);border:0;color:#fff;padding:5px 11px;border-radius:7px;font-weight:600;font-size:12px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><div class="mark">R</div><div>Ramp<small>Early Talent, RBC</small></div></div>
+  <div class="seg">
+    <button id="tab-s" class="on" onclick="setView('s')">Student</button>
+    <button id="tab-p" onclick="setView('p')">Program</button>
+  </div>
+  <div class="who" id="who"></div>
+</div>
+
+<!-- ================= STUDENT ================= -->
+<div class="wrap" id="view-s">
+  <div class="hud">
+    <div class="t">Your term, one road<span>Week 6 of 16, Capital Markets Tech, Pod 4</span></div>
+    <div class="stats">
+      <div class="stat"><b id="hud-xp">1,240</b><span>Ramp XP</span></div>
+      <div class="stat flame"><b id="hud-streak">5 &#128293;</b><span>Check-in streak</span></div>
+      <div class="stat"><b id="hud-steps">7/12</b><span>Checklist</span></div>
+      <div class="stat"><b>45%</b><span>Road travelled</span></div>
+    </div>
+  </div>
+
+  <div class="mapwrap">
+    <div id="mapslot"></div>
+    <div class="legend">
+      <span><i style="background:#0f7156"></i>Done</span>
+      <span><i style="background:#1565d8"></i>You are here</span>
+      <span><i style="background:#f0b259"></i>Always open</span>
+      <span><i style="background:#c3ced9"></i>Locked</span>
+    </div>
+    <div class="maptip">Click any building</div>
+  </div>
+
+  <div class="note" style="margin-top:14px">
+    <b>Everything on this map is a signal.</b> Checklist items that stall, questions that repeat, check-ins that break their streak and events you skip all land on the program dashboard. You never fill in a separate survey.
+  </div>
+</div>
+
+<!-- ================= PROGRAM ================= -->
+<div class="wrap hide" id="view-p">
+  <div class="sechead" style="margin-top:0">
+    <h2>Fall 2026 cohort, Capital Markets Tech</h2>
+    <p>41 co-ops and new grads. Signals refreshed 12 minutes ago. Nothing here was collected by a survey.</p>
+  </div>
+
+  <div class="grid c4">
+    <div class="kpi"><div class="lab">Cohort health</div><div class="val">72<small>/100</small></div>
+      <div class="delta down">&#9660; 4 vs last week</div><div class="bar"><i style="width:72%"></i></div></div>
+    <div class="kpi"><div class="lab">Feedback latency</div><div class="val">6<small> days</small></div>
+      <div class="delta up">Was 94 days on midterm and endterm surveys</div><div class="bar"><i style="width:94%;background:var(--green)"></i></div></div>
+    <div class="kpi"><div class="lab">Flags actioned in 5 days</div><div class="val" id="kpi-act">68<small>%</small></div>
+      <div class="delta" id="kpi-act-d" style="color:var(--ink-3)">17 of 25 flags this month</div>
+      <div class="bar"><i id="kpi-act-bar" style="width:68%;background:var(--amber)"></i></div></div>
+    <div class="kpi"><div class="lab">Path visibility</div><div class="val">54<small>%</small></div>
+      <div class="delta down">can name a next step at RBC</div><div class="bar"><i style="width:54%;background:var(--red)"></i></div></div>
+  </div>
+
+  <div class="grid c2" style="margin-top:16px">
+    <div class="card">
+      <h3>Leading signals</h3>
+      <div class="sub">Five of these six need nobody to fill anything in. They come from systems this cohort already uses.</div>
+      <div id="sigs"></div>
+    </div>
+    <div class="card">
+      <h3>Why this beats a survey</h3>
+      <div class="sub">Same cohort, same month.</div>
+      <div class="kv"><span>Midterm survey response rate</span><b class="mono">34%</b></div>
+      <div class="kv"><span>Weekly check-in completion</span><b class="mono up">81%</b></div>
+      <div class="kv"><span>Signals needing no student input</span><b class="mono">5 of 6</b></div>
+      <div class="kv"><span>Days from problem to program seeing it</span><b class="mono up">6</b></div>
+      <div class="kv"><span>Comments unlocked by the 3 person threshold</span><b class="mono">28 of 46</b></div>
+      <div class="note" style="margin-top:14px">The 18 comments under the threshold were not thrown away. They reached the program team with names removed, and two of them are themes below.</div>
+    </div>
+  </div>
+
+  <div class="sechead"><h2>Flags, each with the action attached</h2><p>A score nobody acts on is a dashboard. A flag with an owner and a deadline is an intervention.</p></div>
+  <div id="flags"></div>
+
+  <div class="grid c2">
+    <div class="card">
+      <h3>Systemic themes</h3>
+      <div class="sub">Clustered from TIA questions and check-in comments. One student is noise, fourteen is a program gap.</div>
+      <div id="themes"></div>
+    </div>
+    <div class="card">
+      <h3>Event payoff, not just attendance</h3>
+      <div class="sub">Registration and attendance were already tracked. "Did this help you, two weeks later" was not.</div>
+      <table><thead><tr><th>Session</th><th class="num">Reg</th><th class="num">Att</th><th>Helped</th><th>Read</th></tr></thead>
+        <tbody id="events"></tbody></table>
+      <div class="note" style="margin-top:14px"><b>The fireside is the catch.</b> 87% attendance made it look like the best session of the term. Two weeks later it scored 2.8 out of 5 on "this helped me". Attendance measured obligation, not value.</div>
+    </div>
+  </div>
+
+  <div class="sechead"><h2>Guardrails</h2><p>At a bank this is the slide that decides whether the tool ships.</p></div>
+  <div class="card"><div class="gov">
+    <div><b>Metadata, never content</b><p>Timestamps, counts and calendar gaps. No message text, no code, no email bodies.</p></div>
+    <div><b>Students see their own record</b><p>Every signal here is visible to the person it came from, in the same words.</p></div>
+    <div><b>Three or it rolls up</b><p>A manager sees a comment only once 3 people in the cohort say something similar.</p></div>
+    <div><b>Never a performance input</b><p>Walled off from reviews and return-offer decisions. Written into the pilot terms.</p></div>
+  </div></div>
+</div>
+
+<div class="backdrop" id="backdrop" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="dhead"><div><h2 id="d-title"></h2><p id="d-sub"></p></div><button class="dclose" onclick="closeDrawer()">&#10005;</button></div>
+  <div class="dbody" id="d-body"></div>
+</div>
+
+<div class="toast" id="toast"><span id="toast-m"></span><button onclick="hideToast()">Close</button></div>
+
+<script>
+const $=s=>document.querySelector(s);
+
+/* ================= SVG TOWN ================= */
+const W=1500,H=860;
+const C={road:"#c3ced9",roadEdge:"#aab6c3",grass:"#dfeae2",water:"#73c0bd",
+  roof:"#3f4a57",win:"#fdf6e8",trunk:"#4e5a63"};
+
+function r(x,y,w,h,f,rx=0){return `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${f}" rx="${rx}"/>`}
+function tri(p,f){return `<polygon points="${p}" fill="${f}"/>`}
+function win(x,y,w,h){
+  return r(x,y,w,h,C.win,2)+
+  `<path d="M${x+w/2} ${y}V${y+h}M${x} ${y+h/2}H${x+w}" stroke="${C.roof}" stroke-width="2"/>`+
+  `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="${C.roof}" stroke-width="2.4" rx="2"/>`;
+}
+function winGrid(x,y,w,h,cols,rows,ww,wh){
+  let s="",gx=(w-cols*ww)/(cols+1),gy=(h-rows*wh)/(rows+1);
+  for(let i=0;i<cols;i++)for(let j=0;j<rows;j++)
+    s+=win(x+gx+(ww+gx)*i,y+gy+(wh+gy)*j,ww,wh);
+  return s;
+}
+function door(x,b,w=26,h=40,f="#f3c98b"){
+  return r(x-w/2,b-h,w,h,f,3)+`<circle cx="${x+w/4}" cy="${b-h/2}" r="2.2" fill="${C.roof}"/>`;
+}
+/* peaked house */
+function house(x,b,w,h,o={}){
+  const body=o.body||"#f0b259",rf=o.roof||C.roof,rh=o.rh||44,ov=o.ov||13;
+  let s=r(x,b-h,w,h,body,3);
+  s+=tri(`${x-ov},${b-h} ${x+w+ov},${b-h} ${x+w/2},${b-h-rh}`,rf);
+  if(o.chim)s+=r(x+w*0.72,b-h-rh*0.62,13,30,rf,2);
+  s+=winGrid(x,b-h,w,h-46,o.cols||2,o.rows||1,30,26);
+  s+=door(x+w/2,b,26,42,o.door||"#f3c98b");
+  return s;
+}
+/* flat-roof block */
+function block(x,b,w,h,o={}){
+  const body=o.body||"#e8705f";
+  let s=r(x,b-h,w,h,body,3);
+  s+=r(x-6,b-h-11,w+12,13,o.roof||C.roof,3);
+  s+=winGrid(x,b-h+6,w,h-52,o.cols||3,o.rows||2,22,20);
+  s+=door(x+w/2,b,30,44,o.door||"#f3c98b");
+  return s;
+}
+/* glass tower */
+function tower(x,b,w,h,o={}){
+  const body=o.body||"#5aa9b5";
+  let s=r(x,b-h,w,h,body,4);
+  s+=`<polygon points="${x},${b-h} ${x+w*0.55},${b-h} ${x},${b-h*0.45}" fill="rgba(255,255,255,.17)"/>`;
+  s+=r(x+w*0.42,b-h-26,7,26,C.roof,2);
+  s+=r(x+w*0.3,b-h-34,30,9,o.body||"#5aa9b5",2);
+  let g="";
+  for(let i=0;i<3;i++)for(let j=0;j<5;j++){
+    const lit=(i+j)%3===0;
+    g+=r(x+13+i*(w-26)/3,b-h+20+j*(h-50)/5,13,13,lit?C.win:"rgba(63,74,87,.72)",2);
+  }
+  s+=g+door(x+w/2,b,28,38,"#f3c98b");
+  return s;
+}
+function tree(x,b,s=1,c="#7ab87f"){
+  return `<g><path d="M${x} ${b}V${b-44*s}" stroke="${C.trunk}" stroke-width="${4.5*s}" stroke-linecap="round"/>
+  <path d="M${x} ${b-30*s}l${-9*s} ${-11*s}M${x} ${b-38*s}l${9*s} ${-10*s}" stroke="${C.trunk}" stroke-width="${3*s}" stroke-linecap="round"/>
+  <ellipse cx="${x}" cy="${b-60*s}" rx="${21*s}" ry="${27*s}" fill="${c}"/></g>`;
+}
+function bush(x,b,s=1,c="#86c48c"){
+  return `<g><ellipse cx="${x-11*s}" cy="${b-7*s}" rx="${13*s}" ry="${9*s}" fill="${c}"/>
+  <ellipse cx="${x+11*s}" cy="${b-7*s}" rx="${13*s}" ry="${9*s}" fill="${c}"/>
+  <ellipse cx="${x}" cy="${b-12*s}" rx="${16*s}" ry="${12*s}" fill="${c}"/></g>`;
+}
+function lamp(x,b,s=1){
+  return `<g><path d="M${x} ${b}V${b-52*s}" stroke="${C.trunk}" stroke-width="${4*s}" stroke-linecap="round"/>
+  <ellipse cx="${x}" cy="${b-56*s}" rx="${8*s}" ry="${10*s}" fill="#f6d79b"/>
+  <ellipse cx="${x}" cy="${b}" rx="${9*s}" ry="${3.5*s}" fill="${C.trunk}"/></g>`;
+}
+function car(x,y,c="#e8705f",flip=false){
+  const g=`<g transform="translate(${x},${y})${flip?" scale(-1,1)":""}">
+    <rect x="-27" y="-11" width="54" height="19" rx="9" fill="${c}"/>
+    <path d="M-15 -11q4 -13 14 -13t14 13z" fill="${c}"/>
+    <rect x="-8" y="-20" width="17" height="9" rx="3" fill="${C.win}"/>
+    <circle cx="-15" cy="8" r="5.5" fill="${C.roof}"/><circle cx="16" cy="8" r="5.5" fill="${C.roof}"/>
+  </g>`;return g;
+}
+function fish(x,y,c="#f3a65a"){
+  return `<g><ellipse cx="${x}" cy="${y}" rx="11" ry="6" fill="${c}"/>
+  <polygon points="${x+9},${y} ${x+18},${y-6} ${x+18},${y+6}" fill="${c}"/>
+  <circle cx="${x-5}" cy="${y-1.5}" r="1.6" fill="#2d3a43"/></g>`;
+}
+function cloud(x,y,s=1){
+  return `<g opacity=".75"><ellipse cx="${x}" cy="${y}" rx="${30*s}" ry="${17*s}" fill="#fff"/>
+  <ellipse cx="${x-24*s}" cy="${y+5*s}" rx="${20*s}" ry="${12*s}" fill="#fff"/>
+  <ellipse cx="${x+25*s}" cy="${y+5*s}" rx="${22*s}" ry="${13*s}" fill="#fff"/></g>`;
+}
+function flag(x,b){
+  return `<g><path d="M${x} ${b}V${b-66}" stroke="${C.trunk}" stroke-width="5" stroke-linecap="round"/>
+  <path d="M${x+2} ${b-66}h46l-12 15 12 15h-46z" fill="#0f7156"/>
+  <ellipse cx="${x}" cy="${b}" rx="12" ry="4.5" fill="${C.trunk}"/></g>`;
+}
+
+/* ---------- buildings ---------- */
+const BLD=[
+ {id:"welcome",name:"Welcome Centre",tag:"Done",state:"done",x:170,b:690,w:175,h:112,
+  draw:(x,b,w,h)=>block(x,b,w,h,{body:"#f5e6c8",roof:"#5aa9b5",cols:4,rows:2,door:"#5aa9b5"}),
+  sub:"RBC basics, your business unit and your pod, pulled from the HR portal"},
+ {id:"checklist",name:"Onboarding Checklist",tag:"7 of 12",state:"now",x:600,b:690,w:152,h:108,
+  draw:(x,b,w,h)=>house(x,b,w,h,{body:"#e8705f",roof:"#3f4a57",cols:3,rows:1,chim:true}),
+  sub:"Everything you need done, with the half that ticks itself"},
+ {id:"mentor",name:"Mentor Hall",tag:"Needs you",state:"warn",x:1030,b:690,w:162,h:118,
+  draw:(x,b,w,h)=>house(x,b,w,h,{body:"#b06a9e",roof:"#3f4a57",cols:3,rows:2,rh:50}),
+  sub:"Your matched mentor, your buddy, and the 1:1 that has slipped"},
+ {id:"tia",name:"TIA Tower",tag:"Always open",state:"open",x:1150,b:410,w:98,h:132,
+  draw:(x,b,w,h)=>tower(x,b,w,h,{body:"#5aa9b5"}),
+  sub:"RBC's existing assistant. Ramp routes you here and counts the topics"},
+ {id:"checkin",name:"Check-in Station",tag:"Open now",state:"hero",x:640,b:410,w:200,h:134,
+  draw:(x,b,w,h)=>block(x,b,w,h,{body:"#f0b259",roof:"#b45309",cols:4,rows:2,door:"#b45309"}),
+  sub:"The main feature. Three taps a week, and the streak that keeps it honest"},
+ {id:"connect",name:"Connect Plaza",tag:"Always open",state:"open",x:200,b:410,w:165,h:122,
+  draw:(x,b,w,h)=>block(x,b,w,h,{body:"#7d9fd4",roof:"#3f4a57",cols:4,rows:3}),
+  sub:"RBC Connect events, and the question nobody asks after them"},
+ {id:"library",name:"Resource Library",tag:"Always open",state:"open",x:300,b:134,w:158,h:102,
+  draw:(x,b,w,h)=>block(x,b,w,h,{body:"#c2705f",roof:"#3f4a57",cols:4,rows:2,door:"#f5e6c8"}),
+  sub:"Team tooling, runbooks, learning paths, and the return-offer criteria"},
+ {id:"wrapped",name:"Wrapped Arena",tag:"Dec 1",state:"lock",x:800,b:134,w:176,h:104,
+  draw:(x,b,w,h)=>block(x,b,w,h,{body:"#8b5cf6",roof:"#4c1d95",cols:5,rows:2,door:"#f5e6c8"}),
+  sub:"Your month as a highlight reel, and the only thing your manager sees"}
+];
+
+const ROAD="M 10 750 L 1330 750 Q 1400 750 1400 680 L 1400 540 Q 1400 470 1330 470 L 175 470 Q 105 470 105 400 L 105 264 Q 105 194 175 194 L 1490 194";
+
+function buildMap(){
+  let s=`<svg class="map" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
+  /* sky */
+  s+=cloud(250,55,1)+cloud(700,44,.8)+cloud(1215,62,.9);
+  /* river along the bottom */
+  s+=`<path d="M0 812 Q 230 792 460 814 T 920 814 T 1500 800 L1500 860 L0 860Z" fill="${C.water}"/>`;
+  s+=`<path d="M80 832h66M186 846h52M340 830h60M520 844h54M700 830h62M880 846h56M1060 832h58M1240 844h52M1390 830h60"
+      stroke="rgba(255,255,255,.55)" stroke-width="4" stroke-linecap="round"/>`;
+  s+=fish(290,838)+fish(640,832,"#e8705f")+fish(1020,840,"#f0b259");
+  /* road */
+  s+=`<path d="${ROAD}" fill="none" stroke="${C.roadEdge}" stroke-width="52" stroke-linecap="round" stroke-linejoin="round"/>`;
+  s+=`<path d="${ROAD}" fill="none" stroke="${C.road}" stroke-width="46" stroke-linecap="round" stroke-linejoin="round"/>`;
+  s+=`<path id="roadline" d="${ROAD}" fill="none" stroke="#fff" stroke-width="3.4" stroke-dasharray="17 19" stroke-linecap="round"/>`;
+  s+=`<path id="roadprog" d="${ROAD}" fill="none" stroke="#1565d8" stroke-width="7" stroke-linecap="round" opacity=".5"/>`;
+  /* scenery, bottom band */
+  s+=bush(128,706,.9)+lamp(382,704)+tree(430,702,1,"#7ab87f")+tree(478,708,.8,"#f0a35c")+bush(520,712,1)
+   +tree(810,704,.95,"#86c48c")+tree(858,710,.75,"#f3b55f")+lamp(912,706)+bush(968,712,1.05);
+  /* scenery, middle band */
+  s+=lamp(152,428)+tree(430,422,.9,"#86c48c")+lamp(498,426)+tree(552,420,.8,"#f0a35c")+bush(596,430,.95)
+   +tree(906,424,.95,"#7ab87f")+tree(954,428,.75,"#f3b55f")+bush(1002,432,1)+lamp(1066,426)
+   +tree(1300,422,.85,"#7ab87f")+bush(1346,430,.9);
+  /* scenery, top band */
+  s+=tree(180,146,.9,"#7ab87f")+bush(228,152,.9)+tree(520,144,.95,"#f0a35c")+tree(572,150,.75,"#86c48c")
+   +lamp(642,148)+bush(702,154,1)+tree(1046,144,.9,"#7ab87f")+bush(1094,150,1)
+   +tree(1196,146,.85,"#f0a35c")+lamp(1268,148);
+  /* finish */
+  s+=flag(1390,164)+`<text x="1390" y="192" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0f7156">Week 16</text>`;
+  /* parking strip */
+  s+=r(1222,556,142,112,"#cfd8e0",9)+`<path d="M1236 576h114M1236 612h114" stroke="#fff" stroke-width="3"/>`;
+  s+=car(1293,596,"#f0b259")+car(1293,634,"#b06a9e")+car(1293,666,"#e8705f");
+  /* cars on the road */
+  s+=car(900,750,"#e8705f")+car(420,470,"#7d9fd4",true)+car(1120,194,"#86c48c");
+
+  /* buildings */
+  BLD.forEach(x=>{
+    const lock=x.state==="lock";
+    s+=`<g class="bld ${lock?"locked":""}" data-id="${x.id}" role="button" tabindex="0">`;
+    s+=`<ellipse cx="${x.x+x.w/2}" cy="${x.b+5}" rx="${x.w*0.56}" ry="9" fill="rgba(16,24,40,.09)"/>`;
+    s+=x.draw(x.x,x.b,x.w,x.h);
+    if(x.id==="checkin"){
+      s+=`<g><rect x="${x.x+x.w/2-58}" y="${x.b-x.h-52}" width="116" height="31" rx="9" fill="#b45309"/>
+      <text x="${x.x+x.w/2}" y="${x.b-x.h-31}" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">CHECK IN</text>
+      <text x="${x.x+x.w/2+76}" y="${x.b-x.h-28}" text-anchor="middle" font-size="26">&#128293;</text></g>`;
+    }
+    /* plaque */
+    const px=x.x+x.w/2, py=x.b+16;
+    const nameW=x.name.length*7.45, tagW=x.tag.length*6.5+16;
+    const pw=Math.max(nameW+tagW+46,172);
+    const col=x.state==="done"?"#0f7156":x.state==="hero"?"#b45309":x.state==="warn"?"#b3261e":
+              x.state==="now"?"#1565d8":x.state==="lock"?"#98a2b3":"#a16207";
+    s+=`<g class="plaque"><rect x="${px-pw/2}" y="${py}" width="${pw}" height="34" rx="10" fill="#fff" opacity=".96"/>
+      <text x="${px-pw/2+14}" y="${py+22}" font-size="13.5" font-weight="700" fill="#101828">${x.name}</text>
+      <rect x="${px+pw/2-14-tagW}" y="${py+9}" width="${tagW}" height="17" rx="8" fill="${col}" opacity=".15"/>
+      <text x="${px+pw/2-14-tagW/2}" y="${py+21.5}" font-size="10.5" font-weight="700" fill="${col}" text-anchor="middle">${x.tag}</text>
+      </g></g>`;
+  });
+  s+=`<g id="youpin"></g>`;
+  s+=`</svg>`;
+  return s;
+}
+$("#mapslot").innerHTML=buildMap();
+
+/* progress + pin */
+(function(){
+  const p=document.getElementById("roadprog");
+  const L=p.getTotalLength(),F=0.45;
+  p.style.strokeDasharray=L;p.style.strokeDashoffset=L*(1-F);
+  const pt=p.getPointAtLength(L*F);
+  document.getElementById("youpin").innerHTML=
+    `<g transform="translate(${pt.x},${pt.y})">
+      <ellipse cx="0" cy="4" rx="15" ry="5" fill="rgba(16,24,40,.18)"/>
+      <path d="M0 2c0 0 17-18 17-30A17 17 0 1 0 -17 -28C-17 -16 0 2 0 2Z" fill="#1565d8"/>
+      <circle cx="0" cy="-29" r="11" fill="#fff"/>
+      <text x="0" y="-25" text-anchor="middle" font-size="11" font-weight="700" fill="#1565d8">AO</text>
+    </g>`;
+})();
+
+document.querySelectorAll(".bld").forEach(g=>{
+  g.addEventListener("click",()=>openB(g.dataset.id));
+  g.addEventListener("keydown",e=>{if(e.key==="Enter")openB(g.dataset.id)});
+});
+
+/* ================= STATE ================= */
+let streak=5, xp=1240, done=7;
+const checklist=[
+ {g:"Access and setup",items:[
+  {t:"Laptop, VPN and MFA",xp:100,on:true,auto:"Auto-ticked from the HR portal"},
+  {t:"Core systems access",xp:100,on:true,auto:"Auto-ticked from the HR portal"},
+  {t:"Artifactory group access",xp:100,on:false,block:true},
+  {t:"Dev environment running locally",xp:150,on:true,auto:"Auto-detected from GitHub"}]},
+ {g:"People",items:[
+  {t:"Meet your pod, 3 intro coffees",xp:100,on:true},
+  {t:"Mentor matched and first 1:1 booked",xp:150,on:true},
+  {t:"Name your go-to person when stuck",xp:100,on:false},
+  {t:"Join the 3 channels your pod lives in",xp:50,on:true,auto:"Auto-detected from Slack"}]},
+ {g:"First delivery",items:[
+  {t:"First commit merged",xp:150,on:true,auto:"Auto-detected from GitHub"},
+  {t:"Own a ticket end to end",xp:200,on:false},
+  {t:"Shadow a production incident",xp:200,on:false},
+  {t:"Demo at team standup",xp:250,on:false}]}
+];
+const feed=[
+ {t:"Pod standup moved to 10:15 so co-ops with 9:00 classes can attend.",m:"4 of you asked. Shipped 2 days ago."},
+ {t:"Your team now has a tooling and pipeline page, not just the laptop doc.",m:"You asked twice. Shipped last week."},
+ {t:"Return-offer criteria are being written down and published.",m:"17 of you asked. In review."}
+];
+const answers={
+ "How do I get Artifactory access?":{a:"Your pod uses the <b>cmt-build</b> group. Raise an access request in the HR portal under Tooling, pick cmt-build, and have your pod lead approve it. Median turnaround on your floor is 2 days. Your laptop doc does not mention this, which is why it keeps coming up.",m:"19 students have asked this. It is theme #1 on the program board and the fix shipped Tuesday."},
+ "Who reviews PRs on my team?":{a:"Two reviewers are required, one from the <b>payments-core</b> owners group. Raj and Lin cover most of them. Lin's queue is usually under 4 hours, Raj's is 2 days. Post it in the pod channel too, that is where it actually gets picked up.",m:"Logged. Ramp counts the topic, never the words."},
+ "What does a strong co-op term look like?":{a:"On your team it is three things: one feature owned end to end, one runbook or doc left behind, and a standup demo. Written down nowhere until now, which is why 14 people have asked.",m:"This gap is theme #2. The program team is drafting a one-page expectations sheet for week 1."}
+};
+
+/* ================= PANELS ================= */
+function P(id){
+ if(id==="welcome")return `
+  <h4>Your first three days</h4>
+  <div class="tiles">
+   <div class="tile"><b>Who you work for</b><p>Capital Markets Technology, inside Capital Markets. 420 people, 11 pods.</p></div>
+   <div class="tile"><b>What your pod ships</b><p>Payments core services. Roughly 40 releases a quarter.</p></div>
+   <div class="tile"><b>Your term</b><p>16 weeks, 2 check-in milestones, return-offer decision in week 14.</p></div>
+   <div class="tile"><b>Who to ask</b><p>Buddy for the day to day, mentor for the term. Both named below.</p></div>
+  </div>
+  <h4>Your pod</h4>
+  ${[["LT","Lin Tran","Senior dev, your buddy","#eaf1fd","#1565d8"],
+     ["RK","Raj Kapoor","Pod lead","#e8f5f0","#0f7156"],
+     ["SM","Sofia Marin","Dev, 2 years in, ex co-op","#fef6e7","#b54708"],
+     ["DM","Dana Mensah","Early Talent program","#f0ecfc","#5b3fb5"]]
+   .map(p=>`<div class="person"><div class="pav" style="background:${p[3]};color:${p[4]}">${p[0]}</div>
+     <div><b>${p[1]}</b><span>${p[2]}</span></div></div>`).join("")}
+  <div class="note" style="margin-top:14px">Nothing on this screen was typed by you or by HR twice. It is read from the HR portal and your pod's directory on day one.</div>`;
+
+ if(id==="checklist"){
+  const total=checklist.reduce((a,g)=>a+g.items.length,0);
+  return `<div class="note" style="margin-bottom:14px"><b>${done} of ${total} done.</b> Six of these tick themselves from systems you already use, so the list stays honest without you maintaining it.</div>
+  ${checklist.map((g,gi)=>`<h4>${g.g}</h4>${g.items.map((it,ii)=>`
+    <div class="check ${it.block?"block":""}">
+      <div class="box ${it.on?"on":""}" onclick="tick(${gi},${ii})">${it.on?"&#10003;":""}</div>
+      <div><p>${it.t}</p>
+        ${it.block?`<span style="color:#b54708"><b>Blocked 4 days.</b> You are the 17th co-op blocked on this in 60 days, so it is already a program flag.</span>`
+          :it.auto?`<span>${it.auto}</span>`:`<span>Tick it when it is true</span>`}</div>
+      <div class="xp">${it.xp} XP</div>
+    </div>`).join("")}`).join("")}
+  <div class="note" style="margin-top:14px">An item that sits unticked for too long is not nagging. It is the program finding out that your access request is stuck.</div>`;
+ }
+
+ if(id==="mentor")return `
+  <div class="note" style="background:var(--red-soft);color:#7f1d1d;margin-bottom:14px">
+   <b>Your last mentor 1:1 was 24 days ago.</b> The cohort median is 9. This is already flag #1 on the program dashboard, and your pod lead saw it before you had to raise it.</div>
+  <h4>Matched for your term</h4>
+  <div class="person"><div class="pav" style="background:#e8f5f0;color:#0f7156">PS</div>
+    <div><b>Priya Shah</b><span>Director, Payments Engineering. Matched on your stated interest in data and ML.</span></div></div>
+  <div class="person"><div class="pav" style="background:#eaf1fd;color:#1565d8">LT</div>
+    <div><b>Lin Tran</b><span>Senior dev, your buddy. For the day to day, not the term.</span></div></div>
+  <h4>Next step</h4>
+  <button class="btn pri" onclick="toast('20 minutes booked with Priya for Tuesday. The flag closes when it happens, not when it is booked.')">Book 20 minutes with Priya</button>
+  <button class="btn" style="margin-left:7px" onclick="toast('Asked. Lin gets a nudge, not a report.')">Ask Lin something</button>
+  <h4>What gets measured here</h4>
+  <div class="kv"><span>Days since last mentor 1:1</span><b class="mono" style="color:var(--red)">24</b></div>
+  <div class="kv"><span>Cohort median</span><b class="mono">9</b></div>
+  <div class="kv"><span>Recurring team meetings you are invited to</span><b class="mono">2 of 5</b></div>
+  <div class="note" style="margin-top:14px">All three come from calendar metadata. Nobody read an invite, nobody filled in a form.</div>`;
+
+ if(id==="checkin"){
+  const days=["W1","W2","W3","W4","W5","W6"];
+  return `<div class="note" style="background:#fff1e6;color:#9a3412;margin-bottom:12px">
+   <b>${streak} week streak.</b> Break it and nothing bad happens to you. The program just loses its earliest signal, which is why it is a streak and not a survey.</div>
+  <div class="streak">${days.map((d,i)=>`<div class="sd ${i<streak?"hit":""} ${i===streak?"now":""}">
+    <i>${i<streak?"&#128293;":i===streak?"&#9679;":""}</i><span>${d}</span></div>`).join("")}</div>
+  <div class="anon" style="margin-top:16px"><span>&#128274;</span><div><b>How this is handled</b>
+   Answers roll up to your cohort. A comment reaches your manager only once 3 or more people say something similar. Below 3, it goes to the program team with your name removed.</div></div>
+  <div id="pulse"></div>
+  <h4>What changed because of you</h4>
+  <ul class="feed" id="feed" style="margin:0;padding:0"></ul>`;
+ }
+
+ if(id==="tia")return `
+  <div class="note" style="margin-bottom:14px"><b>We did not rebuild this.</b> TIA already answers RBC questions. Ramp puts it on the road where you are, grounds it in your pod's own runbooks, and counts which topics keep coming back.</div>
+  <div class="chips">
+   <button class="chip" onclick="ask('How do I get Artifactory access?')">How do I get Artifactory access?</button>
+   <button class="chip" onclick="ask('Who reviews PRs on my team?')">Who reviews PRs on my team?</button>
+   <button class="chip" onclick="ask('What does a strong co-op term look like?')">What does a strong co-op term look like?</button>
+  </div>
+  <div class="askrow"><input id="askin" placeholder="Ask anything about your team, tools or term"
+    onkeydown="if(event.key==='Enter')ask(this.value)">
+   <button class="btn pri" onclick="ask(document.getElementById('askin').value)">Ask</button></div>
+  <div id="ans"></div>
+  <h4>Why this is the best signal you have</h4>
+  <div class="note">A question asked once is a person. The same question asked 19 times is a missing page in the onboarding pack. Ramp stores the topic and the count, never your words.</div>`;
+
+ if(id==="connect")return `
+  <h4>Coming up on RBC Connect</h4>
+  ${[["24","NOV","Intro to the data platform","Teams, 45 min"],
+     ["27","NOV","Co-op coffee with Capital Markets leads","In person, 10th floor"],
+     ["02","DEC","Internal mobility office hour","Added after 9 of you could not name a next step"]]
+   .map(e=>`<div class="evt"><div class="d"><b>${e[0]}</b><span>${e[1]}</span></div>
+     <div class="bd"><b>${e[2]}</b><p>${e[3]}</p></div>
+     <button class="btn sm" onclick="this.textContent='Registered';this.disabled=true;toast('Registered. Attendance and the two-week follow up are now linked to this event.')">Register</button></div>`).join("")}
+  <h4>You went to this. Did it help?</h4>
+  <div class="note" style="margin-bottom:10px">Asked two weeks later, not on the way out the door. This one question is the whole event dashboard on the program side.</div>
+  <div class="evt"><div class="d"><b>06</b><span>NOV</span></div>
+   <div class="bd"><b>Executive fireside</b><p>You attended. 61 of 70 did.</p></div>
+   <div class="stars" id="stars">${[1,2,3,4,5].map(n=>`<button class="star" onclick="rate(${n})">&#9733;</button>`).join("")}</div></div>
+  <div id="rated"></div>`;
+
+ if(id==="library")return `
+  <h4>Your team, written down</h4>
+  <div class="tiles">
+   <div class="tile go"><b>Tooling and pipelines</b><p>Helios, corporate GitHub, Artifactory, how a release actually ships.</p></div>
+   <div class="tile go"><b>Runbooks</b><p>The 6 your pod uses on call. One of them you wrote.</p></div>
+   <div class="tile go"><b>Learning paths</b><p>Upskilling tracks, and which ones RBC pays for.</p></div>
+   <div class="tile go"><b>Return-offer criteria</b><p>Newly published because 17 of you asked.</p></div>
+  </div>
+  <div class="note" style="margin-top:14px"><b>This page exists because of the map.</b> Before Ramp there was a laptop setup doc and nothing else. Forty-one questions about access and environment setup is what got it written.</div>`;
+
+ if(id==="wrapped")return `
+  <div class="note" style="margin-bottom:14px"><b>Preview. Unlocks December 1.</b> Monthly, not yearly, because a co-op term is only four of these.</div>
+  <div class="wrapped">
+   <div class="eyebrow">November, wrapped</div>
+   <h3>You shipped more than you think.</h3>
+   <div class="sub2">Amara O, Capital Markets Tech, Pod 4</div>
+   <div class="wcards">
+    <div class="wc"><b>14</b><span>pull requests merged, top 20% of your cohort</span></div>
+    <div class="wc"><b>6</b><span>teammates you unblocked in channels</span></div>
+    <div class="wc"><b>5 wk</b><span>longest check-in streak</span></div>
+    <div class="wc"><b>7 of 9</b><span>sessions attended</span></div>
+    <div class="wc wide"><b>Your first production incident</b><span>You shadowed the payments latency incident on Nov 12 and wrote the runbook page after it</span></div>
+    <div class="wc wide"><b>Most asked about: the data platform</b><span>So the program booked you an internal mobility office hour on Dec 2</span></div>
+   </div>
+  </div>
+  <h4>Who sees this</h4>
+  <button class="btn pri" onclick="toast('Sent to Priya. She sees achievements and engagement. She does not see a single check-in answer.')">Share with Priya, my mentor</button>
+  <div class="note" style="margin-top:12px"><b>This is how you get managers to adopt the tool.</b> The dashboard gives them problems. Wrapped gives them something good to say in a 1:1, and it is built from work the student actually did. Achievements and engagement are shared. Check-in answers never are.</div>`;
+ return "";
+}
+
+/* ---------- drawer ---------- */
+function openB(id){
+ const b=BLD.find(x=>x.id===id);
+ $("#d-title").textContent=b.name;
+ $("#d-sub").textContent=b.sub;
+ $("#d-body").innerHTML=P(id);
+ if(id==="checkin"){renderPulse();renderFeed();}
+ $("#drawer").classList.add("on");$("#backdrop").classList.add("on");
+}
+function closeDrawer(){$("#drawer").classList.remove("on");$("#backdrop").classList.remove("on")}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeDrawer()});
+
+function tick(gi,ii){
+ const it=checklist[gi].items[ii];
+ if(it.block){toast("Still blocked. Ramp has already raised it, you do not have to chase it.");return}
+ it.on=!it.on; done+=it.on?1:-1; xp+=it.on?it.xp:-it.xp;
+ $("#hud-xp").textContent=xp.toLocaleString();
+ $("#hud-steps").textContent=done+"/12";
+ $("#d-body").innerHTML=P("checklist");
+ if(it.on)toast("+"+it.xp+" XP. The program sees a step cleared, not a form filled in.");
+}
+
+/* ---------- check-in form ---------- */
+const pulseQ=[
+ {q:"How was your week?",o:["&#128546;","&#128533;","&#128528;","&#128578;","&#128512;"],face:true},
+ {q:"Were you stuck on anything for more than a day?",o:["No","Yes, it's sorted","Yes, still stuck"]},
+ {q:"Do you know what good looks like for your work right now?",o:["Yes","Sort of","Not really"]}
+];
+let picks=[null,null,null];
+function renderPulse(){
+ const el=$("#pulse"); if(!el)return;
+ el.innerHTML=pulseQ.map((p,i)=>`<div class="q"><label>${i+1}. ${p.q}</label>
+   <div class="opts">${p.o.map((o,j)=>`<button class="opt ${p.face?"face":""} ${picks[i]===j?"on":""}"
+     onclick="pick(${i},${j})">${o}</button>`).join("")}</div></div>`).join("")
+  +`<div class="q"><label>Anything you would change about the program? Optional.</label>
+     <textarea id="pcom" placeholder="Nobody has told me what a good term looks like here."></textarea></div>
+   <button class="btn pri" id="psend" onclick="submitPulse()">Send</button>`;
+ const n=picks.filter(x=>x!==null).length;
+ const b=$("#psend"); b.textContent=n===3?"Send and keep the streak":`Send, ${n} of 3 answered`; b.disabled=n<3;
+}
+function pick(i,j){picks[i]=j;renderPulse()}
+function submitPulse(){
+ const c=$("#pcom").value.trim();
+ streak++; xp+=120;
+ $("#hud-streak").innerHTML=streak+" &#128293;";
+ $("#hud-xp").textContent=xp.toLocaleString();
+ $("#pulse").innerHTML=`<div class="note" style="background:var(--green-soft);color:var(--green)">
+   <b>Sent in 19 seconds. Streak is now ${streak}.</b><br>${c?
+   "Your comment matched 13 others in the cohort, so it is above the 3 person threshold. It reaches your pod lead as a theme, not as your name.":
+   "Your answers rolled into the cohort. Nothing was attached to your name."}</div>`;
+ toast("Check-in sent. A midterm survey would have found this in 8 weeks.");
+}
+function renderFeed(){
+ const el=$("#feed"); if(!el)return;
+ el.innerHTML=feed.map((f,i)=>`<li class="${f.f?"fresh":""}"><div class="dot">&#10003;</div>
+   <div><p>${f.t}</p><span>${f.m}</span></div></li>`).join("");
+}
+function ask(q){
+ if(!q||!q.trim())return;
+ const hit=answers[q]||{a:"TIA does not have a grounded answer for this yet, so it goes to your buddy with your question attached, and the gap is logged for the program team.",m:"Unanswered questions are the most useful signal this tool collects."};
+ const inp=$("#askin"); if(inp)inp.value="";
+ $("#ans").innerHTML=`<div class="answer"><div style="font-weight:600;margin-bottom:6px">${q}</div>${hit.a}
+   <div class="meta">${hit.m}</div></div>`;
+}
+function rate(n){
+ document.querySelectorAll("#stars .star").forEach((s,i)=>s.classList.toggle("on",i<n));
+ $("#rated").innerHTML=`<div class="note" style="margin-top:10px">Logged as <b>${n} of 5</b>. The cohort average for this session is 2.8 against 87% attendance, which is why the program is reworking the format instead of celebrating the turnout.</div>`;
+}
+
+/* ================= PROGRAM ================= */
+const sigs=[
+ {n:"Days to first merged PR",med:"11 days",w:72,out:"4 people past 21 days",src:"GitHub Enterprise",c:"var(--azure)"},
+ {n:"Time a question stays open",med:"3.2 hours",w:58,out:"6 people past 24 hours",src:"Slack metadata",c:"var(--azure)"},
+ {n:"Days since last mentor 1:1",med:"9 days",w:88,out:"5 people past 21 days",src:"Outlook calendar",c:"var(--red)"},
+ {n:"Onboarding checklist stalled",med:"14% of cohort",w:45,out:"6 people stuck on the same item",src:"Ramp checklist",c:"var(--amber)"},
+ {n:"Same ticket type 4 weeks running",med:"18% of cohort",w:34,out:"5 people, no new work type",src:"Jira",c:"var(--amber)"},
+ {n:"Check-in streak kept",med:"81%",w:81,out:"vs 34% on the midterm survey",src:"Ramp",c:"var(--green)"}
+];
+const flags=[
+ {id:"f1",sev:"hi",sevl:"Act this week",title:"3 co-ops, 21+ days with no mentor 1:1, and all three say they cannot tell what good looks like",
+  ev:[["Calendar","Last mentor 1:1: 24, 26 and 31 days ago"],["Check-in","All three picked \"not really\" on what good looks like, 2 weeks running"],
+      ["Jira","Same ticket type 4 weeks running for 2 of the 3"],["Threshold","3 similar comments, so the pod lead sees this by name"]],
+  act:"Book a 20 minute 1:1 with each this week and use the 5 question script. Nothing else.",
+  own:"Pod lead, Capital Markets Tech",sla:"3 days",
+  loop:"Your mentor 1:1 was rebooked after 24 days without one. A pod lead saw the gap before you had to raise it."},
+ {id:"f2",sev:"md",sevl:"Act in 2 days",title:"1 co-op, checklist item blocked 4 days, 2 questions still open, first merge slipped to day 24",
+  ev:[["Ramp","Artifactory access unticked for 4 days"],["GitHub","First merged PR at day 24, cohort median is 11"],
+      ["TIA","Asked the same access question 3 times"],["Threshold","Single person, so the pod lead sees signals, not the comment"]],
+  act:"Grant cmt-build access today, then pair 45 minutes on the open ticket.",
+  own:"Onboarding buddy",sla:"2 days",
+  loop:"Your access was granted and 45 minutes of pairing is booked for tomorrow."},
+ {id:"f3",sev:"lo",sevl:"Act in 10 days",title:"9 students cannot name a next step at RBC, and 6 named an interest no nearby team covers",
+  ev:[["Ramp","9 of 41 picked \"not visible\" or \"not sure\" on their path"],["Ramp","6 named data, ML or product, none represented in this pod"],
+      ["History","This pattern preceded 4 of last year's 7 declined return offers"]],
+  act:"Run one internal mobility office hour and invite the 3 teams they named.",
+  own:"Early Talent program manager",sla:"10 days",
+  loop:"An internal mobility office hour is booked for Dec 2. The three teams you named will be there."}
+];
+const themes=[
+ {n:41,u:"questions",t:"Access and environment setup",p:"19 students. Fix: add a team tooling page to the onboarding pack.",st:"Shipped",c:"p-green"},
+ {n:28,u:"mentions",t:"Nobody told me what good looks like",p:"14 students. Fix: one page of term expectations, handed over in week 1.",st:"Proposed",c:"p-amber"},
+ {n:23,u:"questions",t:"How do I get a return offer",p:"17 students. Fix: publish the return-offer criteria.",st:"In review",c:"p-blue"},
+ {n:17,u:"questions",t:"Who do I ask when I'm stuck",p:"11 students. Fix: name a buddy for the day to day, not just a mentor for the term.",st:"Proposed",c:"p-amber"}
+];
+const events=[
+ {n:"Intro tech session",r:62,a:58,h:4.4,read:"Keep",c:"p-green"},
+ {n:"Resume and interview clinic",r:51,a:48,h:4.6,read:"Scale it",c:"p-green"},
+ {n:"Lunch and learn: Cloud",r:44,a:19,h:3.1,read:"Move the time",c:"p-amber"},
+ {n:"Executive fireside",r:70,a:61,h:2.8,read:"Rework format",c:"p-red"}
+];
+
+$("#sigs").innerHTML=sigs.map(s=>`<div class="sig">
+  <div class="top"><span class="nm">${s.n}</span><span class="pill p-grey">${s.med}</span><span class="src">${s.src}</span></div>
+  <div class="track"><i style="width:${s.w}%;background:${s.c}"></i><b style="left:72%"></b></div>
+  <div class="sigfoot"><span>${s.out}</span><span>target marker</span></div></div>`).join("");
+
+let actioned=0;
+$("#flags").innerHTML=flags.map(f=>`<div class="flag ${f.sev}" id="${f.id}">
+  <div class="hd"><span class="pill ${f.sev==="hi"?"p-red":f.sev==="md"?"p-amber":"p-blue"}">${f.sevl}</span><h4>${f.title}</h4></div>
+  <div class="ev">${f.ev.map(e=>`<div><i>${e[0]}</i>${e[1]}</div>`).join("")}</div>
+  <div class="act"><div class="t">PRESCRIBED ACTION</div><p>${f.act}</p>
+    <div class="row"><span>Owner: <b>${f.own}</b></span><span>Due in ${f.sla}</span>
+    <button class="btn sm pri" onclick="doAct('${f.id}')">Mark actioned</button></div></div></div>`).join("");
+
+function doAct(id){
+ const f=flags.find(x=>x.id===id),el=document.getElementById(id);
+ el.classList.add("actioned");
+ el.querySelector(".act").innerHTML=`<div class="t" style="color:var(--green)">ACTIONED, LOOP CLOSED</div>
+   <p>${f.act}</p><div class="row"><span>The students were told what changed, in their own feed.</span></div>`;
+ actioned++;
+ const pct=68+actioned*3;
+ $("#kpi-act").innerHTML=pct+'<small>%</small>';
+ $("#kpi-act-bar").style.width=pct+"%";
+ if(pct>=74)$("#kpi-act-bar").style.background="var(--green)";
+ $("#kpi-act-d").textContent=(17+actioned)+" of "+(25+actioned)+" flags this month";
+ feed.forEach(x=>x.f=false);
+ feed.unshift({t:f.loop,m:"Just now. Closed from the program side, you did not have to chase it.",f:true});
+ renderFeed();
+ toast("Loop closed. Switch to Student, open the Check-in Station, and it is at the top of the feed.","Switch",1);
+}
+
+$("#themes").innerHTML=themes.map(t=>`<div class="theme">
+  <div class="cnt"><b>${t.n}</b><span>${t.u}</span></div>
+  <div class="bd"><b>${t.t}</b><p>${t.p}</p></div><span class="pill ${t.c}">${t.st}</span></div>`).join("");
+
+$("#events").innerHTML=events.map(e=>{
+ const pct=Math.round(e.h/5*100),col=e.h>=4?"var(--green)":e.h>=3?"var(--amber)":"var(--red)";
+ return `<tr><td><b>${e.n}</b></td><td class="num">${e.r}</td><td class="num">${e.a}</td>
+  <td><span class="mini"><i style="width:${pct}%;background:${col}"></i></span>
+  <span class="mono" style="margin-left:7px">${e.h.toFixed(1)}</span></td>
+  <td><span class="pill ${e.c}">${e.read}</span></td></tr>`}).join("");
+
+/* ================= PLUMBING ================= */
+function setView(v){
+ $("#view-s").classList.toggle("hide",v!=="s");
+ $("#view-p").classList.toggle("hide",v!=="p");
+ $("#tab-s").classList.toggle("on",v==="s");
+ $("#tab-p").classList.toggle("on",v==="p");
+ $("#who").innerHTML=v==="s"
+  ?'<div class="av">AO</div><div><b>Amara O.</b><br><span>Co-op, Pod 4</span></div>'
+  :'<div class="av" style="background:var(--azure-soft);color:var(--azure)">DM</div><div><b>Dana M.</b><br><span>Early Talent program</span></div>';
+ try{location.hash=v==="s"?"student":"program"}catch(e){}
+ window.scrollTo({top:0});
+}
+let tt;
+function toast(m,label,goStudent){
+ clearTimeout(tt);
+ $("#toast-m").innerHTML=m;
+ const b=$("#toast").querySelector("button");
+ b.textContent=label||"Close";
+ b.onclick=goStudent?()=>{setView("s");openB("checkin");hideToast()}:hideToast;
+ $("#toast").classList.add("show");
+ tt=setTimeout(hideToast,6500);
+}
+function hideToast(){$("#toast").classList.remove("show")}
+setView(location.hash==="#program"?"p":"s");
+window.addEventListener("hashchange",()=>setView(location.hash==="#program"?"p":"s"));
+</script>
+</body>
+</html>
