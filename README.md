@@ -135,10 +135,6 @@ python3 -m http.server 8000   # then open http://localhost:8000
 
 **This is a hackathon prototype, not an RBC system.** Every student, mentor, number, event and flag in it is invented for the demo. No real RBC data, no real people, and no connection to any RBC system. The integrations listed above describe what a real build would connect to, not what this prototype does.
 
-## Team
-
-- Chhaya Pradhan
-- *(teammate)*
-- *(teammate)*
+## Team 10
 
 Tech@RBC Women's Advisory Program hackathon, November 2026.
