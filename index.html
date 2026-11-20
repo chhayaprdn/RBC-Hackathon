@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ramp</title>
+<title>RBC Lighthouse</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root{
     --ink:#101828; --ink-2:#344054; --ink-3:#667085; --ink-4:#98a2b3;
@@ -22,6 +22,7 @@
   button{font-family:inherit;font-size:inherit;cursor:pointer}
   h1,h2,h3,h4{margin:0;letter-spacing:-.01em}
   .hide{display:none!important}
+  a{color:var(--azure)}
 
   .topbar{position:sticky;top:0;z-index:60;background:#fff;border-bottom:1px solid var(--line);
     padding:0 20px;display:flex;align-items:center;gap:18px;height:58px}
@@ -30,7 +31,7 @@
     display:grid;place-items:center;color:#fff;font-weight:800;font-size:15px}
   .brand small{display:block;font-weight:500;font-size:11px;color:var(--ink-3)}
   .seg{margin-left:auto;display:flex;background:var(--line-2);border-radius:10px;padding:3px;gap:2px}
-  .seg button{border:0;background:transparent;padding:7px 15px;border-radius:8px;font-weight:600;color:var(--ink-3)}
+  .seg button{border:0;background:transparent;padding:7px 14px;border-radius:8px;font-weight:600;color:var(--ink-3)}
   .seg button.on{background:#fff;color:var(--ink);box-shadow:var(--shadow)}
   .who{display:flex;align-items:center;gap:9px;padding-left:16px;border-left:1px solid var(--line)}
   .av{width:30px;height:30px;border-radius:50%;background:var(--violet-soft);color:var(--violet);
@@ -39,8 +40,9 @@
 
   .wrap{max-width:1240px;margin:0 auto;padding:18px 20px 70px}
   .grid{display:grid;gap:16px}
-  .c2{grid-template-columns:1.55fr 1fr}.c3{grid-template-columns:repeat(3,1fr)}.c4{grid-template-columns:repeat(4,1fr)}
-  @media(max-width:900px){.c2,.c3,.c4{grid-template-columns:1fr}}
+  .c2{grid-template-columns:1.55fr 1fr}.c2e{grid-template-columns:1fr 1fr}
+  .c3{grid-template-columns:repeat(3,1fr)}.c4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:900px){.c2,.c2e,.c3,.c4{grid-template-columns:1fr}}
   .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--shadow)}
   .card h3{font-size:14px;margin-bottom:3px}
   .card .sub{color:var(--ink-3);font-size:12.5px;margin-bottom:14px}
@@ -59,39 +61,40 @@
   .kv{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line-2);font-size:13px}
   .kv:last-child{border:0}
   .mono{font-variant-numeric:tabular-nums}
+  ul.bul{margin:0;padding-left:0;list-style:none}
+  ul.bul li{position:relative;padding:9px 0 9px 20px;border-bottom:1px solid var(--line-2);font-size:13px}
+  ul.bul li:last-child{border:0}
+  ul.bul li:before{content:"";position:absolute;left:4px;top:17px;width:6px;height:6px;border-radius:50%;background:var(--ink-4)}
+  ul.bul li b{display:block;margin-bottom:1px}
+  ul.bul li span{color:var(--ink-3);font-size:12.5px}
 
-  /* ---------- HUD ---------- */
   .hud{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);
     border-radius:var(--r);padding:12px 16px;box-shadow:var(--shadow);margin-bottom:14px;flex-wrap:wrap}
   .hud .t{font-size:15px;font-weight:700}
   .hud .t span{display:block;font-size:12px;font-weight:500;color:var(--ink-3)}
   .hud .stats{margin-left:auto;display:flex;gap:9px;flex-wrap:wrap}
-  .stat{background:var(--line-2);border-radius:10px;padding:7px 13px;text-align:center;min-width:76px}
+  .stat{background:var(--line-2);border-radius:10px;padding:7px 13px;text-align:center;min-width:80px}
   .stat b{display:block;font-size:17px;line-height:1.15}
   .stat span{font-size:10.5px;color:var(--ink-3)}
   .stat.flame{background:#fff1e6}.stat.flame b{color:#c2410c}
 
-  /* ---------- map ---------- */
   .mapwrap{background:linear-gradient(180deg,#eaf3f0,#e7eef3);border:1px solid var(--line);
     border-radius:var(--r);overflow:hidden;position:relative;box-shadow:var(--shadow)}
   svg.map{display:block;width:100%;height:auto}
   .bld{cursor:pointer;transform-box:fill-box;transform-origin:center bottom;transition:transform .18s ease}
   .bld:hover{transform:translateY(-7px) scale(1.015)}
-  .bld:focus{outline:none}
-  .bld:focus-visible{outline:none;transform:translateY(-7px)}
+  .bld:focus{outline:none}.bld:focus-visible{outline:none;transform:translateY(-7px)}
   .bld.locked{opacity:.5}
   .plaque{pointer-events:none}
-  .plaque text{font-family:Inter,sans-serif}
   .legend{position:absolute;left:14px;bottom:12px;display:flex;gap:12px;background:rgba(255,255,255,.9);
-    border-radius:10px;padding:7px 12px;font-size:11.5px;color:var(--ink-2);backdrop-filter:blur(4px);flex-wrap:wrap}
+    border-radius:10px;padding:7px 12px;font-size:11.5px;color:var(--ink-2);flex-wrap:wrap}
   .legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:-1px}
-  .maptip{position:absolute;right:14px;top:12px;background:rgba(16,24,40,.85);color:#fff;border-radius:9px;
+  .maptip{position:absolute;right:14px;top:12px;background:rgba(16,24,40,.82);color:#fff;border-radius:9px;
     padding:7px 12px;font-size:11.5px}
 
-  /* ---------- drawer ---------- */
   .backdrop{position:fixed;inset:0;background:rgba(16,24,40,.42);z-index:70;opacity:0;pointer-events:none;transition:.22s}
   .backdrop.on{opacity:1;pointer-events:auto}
-  .drawer{position:fixed;top:0;right:0;bottom:0;width:490px;max-width:94vw;background:#fff;z-index:80;
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:500px;max-width:94vw;background:#fff;z-index:80;
     transform:translateX(102%);transition:transform .26s cubic-bezier(.3,.8,.3,1);display:flex;flex-direction:column;
     box-shadow:-8px 0 40px rgba(16,24,40,.18)}
   .drawer.on{transform:none}
@@ -113,10 +116,23 @@
   .check .xp{margin-left:auto;font-size:11px;color:var(--ink-4);white-space:nowrap}
   .check.block{background:var(--amber-soft);border-radius:9px;padding:10px 11px;border:0;margin:4px 0}
 
+  .seg2{display:flex;background:var(--line-2);border-radius:10px;padding:3px;gap:2px;margin-bottom:16px}
+  .seg2 button{flex:1;border:0;background:transparent;padding:8px 6px;border-radius:8px;font-weight:600;font-size:12.5px;color:var(--ink-3)}
+  .seg2 button.on{background:#fff;color:var(--ink);box-shadow:var(--shadow)}
+  .chipsel{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+  .chipsel button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 13px;font-size:12.5px;color:var(--ink-2)}
+  .chipsel button.on{border-color:var(--navy);background:var(--navy);color:#fff}
+  .ticket{border:1px solid var(--line);border-radius:12px;padding:13px;margin-bottom:11px}
+  .ticket .th{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+  .ticket .th b{font-size:13px}
+  .swrow{display:flex;align-items:center;gap:11px;padding:11px 13px;background:var(--line-2);border-radius:10px;margin-bottom:14px}
+  .swrow .bd{flex:1}.swrow .bd b{font-size:13px;display:block}.swrow .bd span{font-size:11.5px;color:var(--ink-3)}
+  .win{display:flex;gap:9px;align-items:center;background:var(--azure-soft);color:#0b3b6f;border-radius:10px;
+    padding:11px 13px;font-size:12.5px;margin-bottom:14px}
+  .win b{display:block}
   .streak{display:flex;gap:7px;margin:12px 0 4px}
   .sd{flex:1;text-align:center}
-  .sd i{display:block;height:34px;border-radius:9px;background:var(--line-2);display:grid;place-items:center;
-    font-size:15px;font-style:normal}
+  .sd i{display:block;height:34px;border-radius:9px;background:var(--line-2);display:grid;place-items:center;font-size:15px;font-style:normal}
   .sd.hit i{background:#ffedd5}
   .sd.now i{background:var(--azure-soft);box-shadow:0 0 0 2px var(--azure) inset}
   .sd span{font-size:10px;color:var(--ink-4)}
@@ -128,17 +144,10 @@
   .opt.on{border-color:var(--navy);background:var(--navy);color:#fff}
   .face{font-size:19px;padding:5px 11px}
   textarea{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font-family:inherit;font-size:13px;resize:vertical;min-height:58px}
+  input[type=text]{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-family:inherit;font-size:13px}
   .anon{display:flex;gap:9px;align-items:flex-start;background:var(--violet-soft);color:#4a3496;
     border-radius:10px;padding:11px 12px;font-size:12px;margin-bottom:14px}
   .anon b{display:block;margin-bottom:2px}
-
-  .chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:11px}
-  .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:12.5px;color:var(--ink-2)}
-  .chip:hover{border-color:var(--azure);color:var(--azure)}
-  .askrow{display:flex;gap:8px}
-  .askrow input{flex:1;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:13px}
-  .answer{margin-top:12px;border-left:3px solid var(--azure);background:var(--azure-soft);border-radius:0 10px 10px 0;padding:12px 14px;font-size:13px}
-  .answer .meta{margin-top:9px;font-size:11.5px;color:var(--azure);font-weight:600}
 
   .feed li{list-style:none;display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--line-2)}
   .feed li:last-child{border:0}
@@ -149,37 +158,65 @@
 
   .person{display:flex;gap:11px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line-2)}
   .person:last-child{border:0}
-  .pav{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:12px}
+  .pav{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:12px;flex:0 0 auto}
   .person b{font-size:13px;display:block}.person span{font-size:11.5px;color:var(--ink-3)}
 
   .evt{display:flex;gap:11px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line-2)}
   .evt:last-child{border:0}
-  .evt .d{flex:0 0 44px;text-align:center;background:var(--line-2);border-radius:9px;padding:5px 0}
+  .evt .d{flex:0 0 46px;text-align:center;background:var(--line-2);border-radius:9px;padding:5px 0}
   .evt .d b{display:block;font-size:15px;line-height:1}.evt .d span{font-size:10px;color:var(--ink-3)}
   .evt .bd{flex:1}.evt .bd b{font-size:13px}.evt .bd p{margin:1px 0 0;font-size:11.5px;color:var(--ink-3)}
   .stars{display:flex;gap:3px}
   .star{border:0;background:none;font-size:15px;padding:0 1px;color:#d0d5dd;line-height:1}
   .star.on{color:#f59e0b}
 
-  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .tile{border:1px solid var(--line);border-radius:11px;padding:12px}
-  .tile b{display:block;font-size:12.5px;margin-bottom:3px}
-  .tile p{margin:0;font-size:11.5px;color:var(--ink-3)}
-  .tile.go:hover{border-color:var(--azure);cursor:pointer}
+  .goal{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-bottom:1px solid var(--line-2)}
+  .goal:last-child{border:0}
+  .goal .gi{flex:0 0 auto;width:20px;height:20px;border-radius:6px;display:grid;place-items:center;font-size:11px;margin-top:1px}
+  .goal b{font-size:13px;display:block;font-weight:600}
+  .goal span{font-size:11.5px;color:var(--ink-4)}
+  .goal.new{background:var(--green-soft);border-radius:9px;padding:11px;border:0;margin:4px 0}
+
+  .mail{display:flex;gap:12px;padding:14px;border:1px solid var(--line);border-radius:12px;margin-bottom:10px;
+    cursor:pointer;transition:.12s;background:#fff}
+  .mail:hover{border-color:var(--azure);box-shadow:var(--shadow)}
+  .mail .ic{flex:0 0 auto;width:34px;height:34px;border-radius:9px;display:grid;place-items:center;font-size:15px}
+  .mail .bd{flex:1}
+  .mail .bd b{font-size:13.5px;display:block}
+  .mail .bd p{margin:2px 0 0;font-size:12.5px;color:var(--ink-3)}
+  .mail .when{font-size:11px;color:var(--ink-4);white-space:nowrap}
+  .mail.read{opacity:.55}
+  .emailbox{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:16px}
+  .emailbox .eh{background:var(--line-2);padding:11px 14px;font-size:12px;color:var(--ink-3)}
+  .emailbox .eh b{color:var(--ink);font-size:13px;display:block;margin-bottom:2px}
+  .emailbox .eb{padding:14px;font-size:13px}
+
+  .mentee{border:1px solid var(--line);border-radius:12px;padding:15px}
+  .mentee .top{display:flex;gap:11px;align-items:center;margin-bottom:12px}
+  .mentee .top b{font-size:14px;display:block}
+  .mentee .top span{font-size:11.5px;color:var(--ink-3)}
 
   /* wrapped */
-  .wrapped{background:linear-gradient(160deg,#4c1d95,#9333ea 55%,#f97316);border-radius:14px;padding:20px;color:#fff}
-  .wrapped .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.85;font-weight:700}
-  .wrapped h3{font-size:25px;margin:5px 0 3px;letter-spacing:-.02em}
-  .wrapped .sub2{font-size:12.5px;opacity:.85;margin-bottom:16px}
-  .wcards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .wc{background:rgba(255,255,255,.14);border-radius:12px;padding:13px;backdrop-filter:blur(3px)}
-  .wc b{display:block;font-size:27px;line-height:1.05;letter-spacing:-.02em}
-  .wc span{font-size:11.5px;opacity:.9;display:block;margin-top:3px}
-  .wc.wide{grid-column:1/-1}
-  .wc.wide b{font-size:19px}
+  .wstory{border-radius:16px;overflow:hidden}
+  .wslide{padding:26px 22px;color:#fff;position:relative}
+  .w1{background:linear-gradient(165deg,#1d1046,#5b21b6 50%,#c026d3)}
+  .w2{background:linear-gradient(165deg,#065f46,#10b981 60%,#a3e635)}
+  .w3{background:linear-gradient(165deg,#7c2d12,#ea580c 55%,#fbbf24)}
+  .w4{background:linear-gradient(165deg,#0c4a6e,#0284c7 55%,#22d3ee)}
+  .wslide .eyebrow{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;font-weight:800;opacity:.8}
+  .wbig{font-size:68px;font-weight:900;line-height:.92;letter-spacing:-.045em;margin:10px 0 4px}
+  .wmid{font-size:28px;font-weight:800;line-height:1.08;letter-spacing:-.025em;margin:8px 0 4px}
+  .wsub{font-size:14px;opacity:.92;font-weight:500;max-width:330px}
+  .wrow{display:flex;gap:10px;margin-top:16px}
+  .wrow div{flex:1;background:rgba(255,255,255,.17);border-radius:11px;padding:11px}
+  .wrow b{display:block;font-size:22px;font-weight:800;letter-spacing:-.02em}
+  .wrow span{font-size:10.5px;opacity:.9}
+  .wlist{margin:14px 0 0;padding:0;list-style:none;counter-reset:w}
+  .wlist li{display:flex;gap:11px;align-items:baseline;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.2);font-size:14px;font-weight:600}
+  .wlist li:last-child{border:0}
+  .wlist li i{font-style:normal;font-weight:900;opacity:.65;font-size:16px;width:17px}
+  .wlist li span{margin-left:auto;font-weight:500;opacity:.85;font-size:12px}
 
-  /* program */
   .kpi{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--shadow)}
   .kpi .lab{font-size:12px;color:var(--ink-3);font-weight:500}
   .kpi .val{font-size:28px;font-weight:700;margin:7px 0 2px;letter-spacing:-.02em}
@@ -194,14 +231,13 @@
   .sig .src{font-size:11px;color:var(--ink-4);margin-left:auto;white-space:nowrap}
   .track{height:7px;background:var(--line-2);border-radius:99px;position:relative}
   .track i{position:absolute;inset:0 auto 0 0;border-radius:99px}
-  .track b{position:absolute;top:-4px;width:2px;height:15px;background:var(--ink);opacity:.35}
   .sigfoot{display:flex;justify-content:space-between;margin-top:6px;font-size:11.5px;color:var(--ink-3)}
   .flag{border:1px solid var(--line);border-radius:12px;padding:15px;margin-bottom:12px}
   .flag.hi{border-left:4px solid var(--red)}.flag.md{border-left:4px solid var(--amber)}.flag.lo{border-left:4px solid var(--azure)}
   .flag .hd{display:flex;align-items:center;gap:9px;margin-bottom:9px;flex-wrap:wrap}
   .flag h4{font-size:13.5px;margin:0;text-transform:none;letter-spacing:0;color:var(--ink)}
   .flag .ev{display:flex;flex-direction:column;gap:5px;margin:10px 0;font-size:12.5px;color:var(--ink-2)}
-  .flag .ev div{display:flex;gap:8px}.flag .ev i{color:var(--ink-4);font-style:normal;flex:0 0 72px}
+  .flag .ev div{display:flex;gap:8px}.flag .ev i{color:var(--ink-4);font-style:normal;flex:0 0 78px}
   .act{background:var(--line-2);border-radius:10px;padding:12px;margin-top:11px}
   .act .t{font-size:11px;font-weight:700;color:var(--ink-3);letter-spacing:.04em;margin-bottom:5px}
   .act p{margin:0 0 9px;font-size:13px;font-weight:600}
@@ -225,6 +261,12 @@
   @media(max-width:900px){.gov{grid-template-columns:1fr 1fr}}
   .gov div b{display:block;font-size:12.5px;margin-bottom:3px}
   .gov div p{margin:0;font-size:12px;color:var(--ink-3)}
+  .tg{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--line-2)}
+  .tg:last-child{border:0}
+  .tg .bd{flex:1}.tg .bd b{font-size:13px;display:block}.tg .bd span{font-size:11.5px;color:var(--ink-3)}
+  .sw{width:42px;height:24px;border-radius:99px;background:var(--line);position:relative;border:0;transition:.16s;flex:0 0 auto}
+  .sw:after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.16s}
+  .sw.on{background:var(--green)}.sw.on:after{left:21px}
 
   .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,110px);z-index:95;background:var(--ink);color:#fff;
     padding:12px 17px;border-radius:11px;font-size:13px;display:flex;gap:10px;align-items:center;
@@ -236,7 +278,13 @@
 <body>
 
 <div class="topbar">
-  <div class="brand"><div class="mark">R</div><div>Ramp<small>Early Talent, RBC</small></div></div>
+  <div class="brand"><div class="mark"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+    <path d="M12 3.6l1.3 2.2h-2.6z" fill="#fff"/>
+    <rect x="9.3" y="6.1" width="5.4" height="3.4" rx="1" fill="#ffe08a"/>
+    <path d="M10.1 10.1h3.8l1 9.4H9.1z" fill="#fff"/>
+    <path d="M7.4 20.4h9.2" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/>
+    <path d="M16.6 6.6l3.4-1.2M7.4 6.6L4 5.4" stroke="#ffe08a" stroke-width="1.5" stroke-linecap="round"/>
+  </svg></div><div>RBC Lighthouse<small>Early Talent</small></div></div>
   <div class="seg">
     <button id="tab-s" class="on" onclick="setView('s')">Student</button>
     <button id="tab-p" onclick="setView('p')">Program</button>
@@ -247,43 +295,34 @@
 <!-- ================= STUDENT ================= -->
 <div class="wrap" id="view-s">
   <div class="hud">
-    <div class="t">Your term, one road<span>Week 6 of 16, Capital Markets Tech, Pod 4</span></div>
+    <div class="t">Your term<span>Week 6 of 16, Capital Markets Technology, Pod 4</span></div>
     <div class="stats">
-      <div class="stat"><b id="hud-xp">1,240</b><span>Ramp XP</span></div>
+      <div class="stat"><b id="hud-pts">620</b><span>Points</span></div>
       <div class="stat flame"><b id="hud-streak">5 &#128293;</b><span>Check-in streak</span></div>
       <div class="stat"><b id="hud-steps">7/12</b><span>Checklist</span></div>
-      <div class="stat"><b>45%</b><span>Road travelled</span></div>
+      <div class="stat"><b id="hud-evts">7</b><span>Events attended</span></div>
     </div>
   </div>
 
   <div class="mapwrap">
     <div id="mapslot"></div>
-    <div class="legend">
-      <span><i style="background:#0f7156"></i>Done</span>
-      <span><i style="background:#1565d8"></i>You are here</span>
-      <span><i style="background:#f0b259"></i>Always open</span>
-      <span><i style="background:#c3ced9"></i>Locked</span>
-    </div>
-    <div class="maptip">Click any building</div>
-  </div>
-
-  <div class="note" style="margin-top:14px">
-    <b>Everything on this map is a signal.</b> Checklist items that stall, questions that repeat, check-ins that break their streak and events you skip all land on the program dashboard. You never fill in a separate survey.
+    
+    <div class="maptip">Click a building to open it</div>
   </div>
 </div>
 
 <!-- ================= PROGRAM ================= -->
 <div class="wrap hide" id="view-p">
   <div class="sechead" style="margin-top:0">
-    <h2>Fall 2026 cohort, Capital Markets Tech</h2>
-    <p>41 co-ops and new grads. Signals refreshed 12 minutes ago. Nothing here was collected by a survey.</p>
+    <h2>Fall 2026 cohort, Capital Markets Technology</h2>
+    <p>41 co-ops and new grads. Updated 12 minutes ago.</p>
   </div>
 
   <div class="grid c4">
     <div class="kpi"><div class="lab">Cohort health</div><div class="val">72<small>/100</small></div>
       <div class="delta down">&#9660; 4 vs last week</div><div class="bar"><i style="width:72%"></i></div></div>
-    <div class="kpi"><div class="lab">Feedback latency</div><div class="val">6<small> days</small></div>
-      <div class="delta up">Was 94 days on midterm and endterm surveys</div><div class="bar"><i style="width:94%;background:var(--green)"></i></div></div>
+    <div class="kpi"><div class="lab">Check-ins this week</div><div class="val">81<small>%</small></div>
+      <div class="delta up">&#9650; 6 vs last week</div><div class="bar"><i style="width:81%;background:var(--green)"></i></div></div>
     <div class="kpi"><div class="lab">Flags actioned in 5 days</div><div class="val" id="kpi-act">68<small>%</small></div>
       <div class="delta" id="kpi-act-d" style="color:var(--ink-3)">17 of 25 flags this month</div>
       <div class="bar"><i id="kpi-act-bar" style="width:68%;background:var(--amber)"></i></div></div>
@@ -293,46 +332,66 @@
 
   <div class="grid c2" style="margin-top:16px">
     <div class="card">
-      <h3>Leading signals</h3>
-      <div class="sub">Five of these six need nobody to fill anything in. They come from systems this cohort already uses.</div>
+      <h3>Engagement signals</h3>
+      <div class="sub">Cohort medians, with the students sitting outside them.</div>
       <div id="sigs"></div>
     </div>
     <div class="card">
-      <h3>Why this beats a survey</h3>
-      <div class="sub">Same cohort, same month.</div>
-      <div class="kv"><span>Midterm survey response rate</span><b class="mono">34%</b></div>
-      <div class="kv"><span>Weekly check-in completion</span><b class="mono up">81%</b></div>
-      <div class="kv"><span>Signals needing no student input</span><b class="mono">5 of 6</b></div>
-      <div class="kv"><span>Days from problem to program seeing it</span><b class="mono up">6</b></div>
-      <div class="kv"><span>Comments unlocked by the 3 person threshold</span><b class="mono">28 of 46</b></div>
-      <div class="note" style="margin-top:14px">The 18 comments under the threshold were not thrown away. They reached the program team with names removed, and two of them are themes below.</div>
+      <h3>Mentor pool</h3>
+      <div class="sub">Volunteers sign up, you approve, Lighthouse matches on the student's intake form. Mentors are reached by email and never need an account.</div>
+      <div class="kv"><span>Approved mentors</span><b class="mono">38</b></div>
+      <div class="kv"><span>Matched students</span><b class="mono">41 of 41</b></div>
+      <div class="kv"><span>Average mentees per mentor</span><b class="mono">1.1</b></div>
+      <h3 style="margin-top:16px">Awaiting your approval</h3>
+      <div id="pool"></div>
     </div>
   </div>
 
-  <div class="sechead"><h2>Flags, each with the action attached</h2><p>A score nobody acts on is a dashboard. A flag with an owner and a deadline is an intervention.</p></div>
+  <div class="card" style="margin-top:16px">
+    <h3>Check-in Station this week</h3>
+    <div class="sub">The three things a student can send, and where each one goes.</div>
+    <div class="grid c3">
+      <div class="note"><b>33 of 41 weekly check-ins</b><br>Rolls up to the cohort. 8 students missed the window.</div>
+      <div class="note"><b>12 feedback items</b><br>4 sent anonymously. Grouped into themes below.</div>
+      <div class="note"><b>3 support requests open</b><br>Each has a named owner. 1 is past 48 hours.</div>
+    </div>
+  </div>
+
+  <div class="sechead"><h2>Flags</h2><p>Each one carries an owner, an action and a due date.</p></div>
   <div id="flags"></div>
 
   <div class="grid c2">
     <div class="card">
-      <h3>Systemic themes</h3>
-      <div class="sub">Clustered from TIA questions and check-in comments. One student is noise, fourteen is a program gap.</div>
+      <h3>Themes</h3>
+      <div class="sub">Grouped from check-in comments and repeated questions.</div>
       <div id="themes"></div>
     </div>
-    <div class="card">
-      <h3>Event payoff, not just attendance</h3>
-      <div class="sub">Registration and attendance were already tracked. "Did this help you, two weeks later" was not.</div>
-      <table><thead><tr><th>Session</th><th class="num">Reg</th><th class="num">Att</th><th>Helped</th><th>Read</th></tr></thead>
-        <tbody id="events"></tbody></table>
-      <div class="note" style="margin-top:14px"><b>The fireside is the catch.</b> 87% attendance made it look like the best session of the term. Two weeks later it scored 2.8 out of 5 on "this helped me". Attendance measured obligation, not value.</div>
+    <div>
+      <div class="card" style="margin-bottom:16px">
+        <h3>Events</h3>
+        <div class="sub">Pulled from RBC Connect, with the follow-up rating sent two weeks after.</div>
+        <table><thead><tr><th>Session</th><th class="num">Reg</th><th class="num">Att</th><th>Helped</th><th>Read</th></tr></thead>
+          <tbody id="events"></tbody></table>
+      </div>
+      <div class="card">
+        <h3>Cohort settings</h3>
+        <div class="sub">What this cohort sees.</div>
+        <div class="tg"><div class="bd"><b>Award points for onboarding tasks</b><span>Optional. Events always award points.</span></div>
+          <button class="sw on" id="sw1" onclick="swTog('sw1','Onboarding points')"></button></div>
+        <div class="tg"><div class="bd"><b>Weekly check-in reminder</b><span>Friday 9:00, closes Monday</span></div>
+          <button class="sw on" id="sw2" onclick="swTog('sw2','Check-in reminder')"></button></div>
+        <div class="tg"><div class="bd"><b>Email mentors about low engagement</b><span>Triggers after 14 quiet days</span></div>
+          <button class="sw on" id="sw3" onclick="swTog('sw3','Mentor low engagement email')"></button></div>
+      </div>
     </div>
   </div>
 
-  <div class="sechead"><h2>Guardrails</h2><p>At a bank this is the slide that decides whether the tool ships.</p></div>
+  <div class="sechead"><h2>Privacy</h2><p>Shown to every student when they join.</p></div>
   <div class="card"><div class="gov">
-    <div><b>Metadata, never content</b><p>Timestamps, counts and calendar gaps. No message text, no code, no email bodies.</p></div>
-    <div><b>Students see their own record</b><p>Every signal here is visible to the person it came from, in the same words.</p></div>
-    <div><b>Three or it rolls up</b><p>A manager sees a comment only once 3 people in the cohort say something similar.</p></div>
-    <div><b>Never a performance input</b><p>Walled off from reviews and return-offer decisions. Written into the pilot terms.</p></div>
+    <div><b>Metadata only</b><p>Counts, dates and attendance. No message content and no meeting recordings.</p></div>
+    <div><b>You see your own record</b><p>Students can open everything Lighthouse holds about them.</p></div>
+    <div><b>Comments group at three</b><p>A comment reaches a manager only once three people say something similar.</p></div>
+    <div><b>Not a performance input</b><p>Lighthouse data is not used in reviews or return-offer decisions.</p></div>
   </div></div>
 </div>
 
@@ -349,8 +408,7 @@ const $=s=>document.querySelector(s);
 
 /* ================= SVG TOWN ================= */
 const W=1500,H=860;
-const C={road:"#c3ced9",roadEdge:"#aab6c3",grass:"#dfeae2",water:"#73c0bd",
-  roof:"#3f4a57",win:"#fdf6e8",trunk:"#4e5a63"};
+const C={road:"#c3ced9",roadEdge:"#aab6c3",water:"#73c0bd",win:"#fdf6e8",roof:"#3f4a57",trunk:"#4e5a63"};
 
 function r(x,y,w,h,f,rx=0){return `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${f}" rx="${rx}"/>`}
 function tri(p,f){return `<polygon points="${p}" fill="${f}"/>`}
@@ -361,14 +419,12 @@ function win(x,y,w,h){
 }
 function winGrid(x,y,w,h,cols,rows,ww,wh){
   let s="",gx=(w-cols*ww)/(cols+1),gy=(h-rows*wh)/(rows+1);
-  for(let i=0;i<cols;i++)for(let j=0;j<rows;j++)
-    s+=win(x+gx+(ww+gx)*i,y+gy+(wh+gy)*j,ww,wh);
+  for(let i=0;i<cols;i++)for(let j=0;j<rows;j++)s+=win(x+gx+(ww+gx)*i,y+gy+(wh+gy)*j,ww,wh);
   return s;
 }
 function door(x,b,w=26,h=40,f="#f3c98b"){
   return r(x-w/2,b-h,w,h,f,3)+`<circle cx="${x+w/4}" cy="${b-h/2}" r="2.2" fill="${C.roof}"/>`;
 }
-/* peaked house */
 function house(x,b,w,h,o={}){
   const body=o.body||"#f0b259",rf=o.roof||C.roof,rh=o.rh||44,ov=o.ov||13;
   let s=r(x,b-h,w,h,body,3);
@@ -378,29 +434,33 @@ function house(x,b,w,h,o={}){
   s+=door(x+w/2,b,26,42,o.door||"#f3c98b");
   return s;
 }
-/* flat-roof block */
 function block(x,b,w,h,o={}){
   const body=o.body||"#e8705f";
   let s=r(x,b-h,w,h,body,3);
   s+=r(x-6,b-h-11,w+12,13,o.roof||C.roof,3);
   s+=winGrid(x,b-h+6,w,h-52,o.cols||3,o.rows||2,22,20);
   s+=door(x+w/2,b,30,44,o.door||"#f3c98b");
+  if(o.awn)s+=awning(x+w/2,b-74,o.awnW||86,o.awn);
   return s;
 }
-/* glass tower */
+function awning(cx,y,w=86,c1="#c25d4f"){
+  let s=`<path d="M${cx-w/2} ${y} h${w} l12 26 h${-w-24} Z" fill="${c1}"/>`;
+  const n=4, sw=w/(n*2-1);
+  for(let i=0;i<n;i++){
+    const lx=cx-w/2+i*sw*2;
+    s+=`<path d="M${lx} ${y} h${sw} l${sw*0.14+12*(1)} 26 h${-sw-0} Z" fill="rgba(255,255,255,.72)" opacity=".85" transform="translate(${i*1.6},0)"/>`;
+  }
+  s+=`<path d="M${cx-w/2-12} ${y+26} h${w+24}" stroke="rgba(0,0,0,.10)" stroke-width="3"/>`;
+  return s;
+}
 function tower(x,b,w,h,o={}){
   const body=o.body||"#5aa9b5";
   let s=r(x,b-h,w,h,body,4);
   s+=`<polygon points="${x},${b-h} ${x+w*0.55},${b-h} ${x},${b-h*0.45}" fill="rgba(255,255,255,.17)"/>`;
-  s+=r(x+w*0.42,b-h-26,7,26,C.roof,2);
-  s+=r(x+w*0.3,b-h-34,30,9,o.body||"#5aa9b5",2);
-  let g="";
-  for(let i=0;i<3;i++)for(let j=0;j<5;j++){
-    const lit=(i+j)%3===0;
-    g+=r(x+13+i*(w-26)/3,b-h+20+j*(h-50)/5,13,13,lit?C.win:"rgba(63,74,87,.72)",2);
-  }
-  s+=g+door(x+w/2,b,28,38,"#f3c98b");
-  return s;
+  s+=r(x+w*0.42,b-h-26,7,26,C.roof,2)+r(x+w*0.3,b-h-34,30,9,body,2);
+  for(let i=0;i<3;i++)for(let j=0;j<5;j++)
+    s+=r(x+13+i*(w-26)/3,b-h+20+j*(h-50)/5,13,13,(i+j)%3===0?C.win:"rgba(63,74,87,.72)",2);
+  return s+door(x+w/2,b,28,38,"#f3c98b");
 }
 function tree(x,b,s=1,c="#7ab87f"){
   return `<g><path d="M${x} ${b}V${b-44*s}" stroke="${C.trunk}" stroke-width="${4.5*s}" stroke-linecap="round"/>
@@ -418,12 +478,11 @@ function lamp(x,b,s=1){
   <ellipse cx="${x}" cy="${b}" rx="${9*s}" ry="${3.5*s}" fill="${C.trunk}"/></g>`;
 }
 function car(x,y,c="#e8705f",flip=false){
-  const g=`<g transform="translate(${x},${y})${flip?" scale(-1,1)":""}">
+  return `<g transform="translate(${x},${y})${flip?" scale(-1,1)":""}">
     <rect x="-27" y="-11" width="54" height="19" rx="9" fill="${c}"/>
     <path d="M-15 -11q4 -13 14 -13t14 13z" fill="${c}"/>
     <rect x="-8" y="-20" width="17" height="9" rx="3" fill="${C.win}"/>
-    <circle cx="-15" cy="8" r="5.5" fill="${C.roof}"/><circle cx="16" cy="8" r="5.5" fill="${C.roof}"/>
-  </g>`;return g;
+    <circle cx="-15" cy="8" r="5.5" fill="${C.roof}"/><circle cx="16" cy="8" r="5.5" fill="${C.roof}"/></g>`;
 }
 function fish(x,y,c="#f3a65a"){
   return `<g><ellipse cx="${x}" cy="${y}" rx="11" ry="6" fill="${c}"/>
@@ -435,118 +494,177 @@ function cloud(x,y,s=1){
   <ellipse cx="${x-24*s}" cy="${y+5*s}" rx="${20*s}" ry="${12*s}" fill="#fff"/>
   <ellipse cx="${x+25*s}" cy="${y+5*s}" rx="${22*s}" ry="${13*s}" fill="#fff"/></g>`;
 }
-function flag(x,b){
+function flagPole(x,b){
   return `<g><path d="M${x} ${b}V${b-66}" stroke="${C.trunk}" stroke-width="5" stroke-linecap="round"/>
   <path d="M${x+2} ${b-66}h46l-12 15 12 15h-46z" fill="#0f7156"/>
   <ellipse cx="${x}" cy="${b}" rx="12" ry="4.5" fill="${C.trunk}"/></g>`;
 }
 
-/* ---------- buildings ---------- */
+/* harbour: you arrive on the ship, everything else is a shop on the quay. nothing is sequenced */
 const BLD=[
- {id:"welcome",name:"Welcome Centre",tag:"Done",state:"done",x:170,b:690,w:175,h:112,
-  draw:(x,b,w,h)=>block(x,b,w,h,{body:"#f5e6c8",roof:"#5aa9b5",cols:4,rows:2,door:"#5aa9b5"}),
-  sub:"RBC basics, your business unit and your pod, pulled from the HR portal"},
- {id:"checklist",name:"Onboarding Checklist",tag:"7 of 12",state:"now",x:600,b:690,w:152,h:108,
-  draw:(x,b,w,h)=>house(x,b,w,h,{body:"#e8705f",roof:"#3f4a57",cols:3,rows:1,chim:true}),
-  sub:"Everything you need done, with the half that ticks itself"},
- {id:"mentor",name:"Mentor Hall",tag:"Needs you",state:"warn",x:1030,b:690,w:162,h:118,
-  draw:(x,b,w,h)=>house(x,b,w,h,{body:"#b06a9e",roof:"#3f4a57",cols:3,rows:2,rh:50}),
-  sub:"Your matched mentor, your buddy, and the 1:1 that has slipped"},
- {id:"tia",name:"TIA Tower",tag:"Always open",state:"open",x:1150,b:410,w:98,h:132,
-  draw:(x,b,w,h)=>tower(x,b,w,h,{body:"#5aa9b5"}),
-  sub:"RBC's existing assistant. Ramp routes you here and counts the topics"},
- {id:"checkin",name:"Check-in Station",tag:"Open now",state:"hero",x:640,b:410,w:200,h:134,
-  draw:(x,b,w,h)=>block(x,b,w,h,{body:"#f0b259",roof:"#b45309",cols:4,rows:2,door:"#b45309"}),
-  sub:"The main feature. Three taps a week, and the streak that keeps it honest"},
- {id:"connect",name:"Connect Plaza",tag:"Always open",state:"open",x:200,b:410,w:165,h:122,
-  draw:(x,b,w,h)=>block(x,b,w,h,{body:"#7d9fd4",roof:"#3f4a57",cols:4,rows:3}),
-  sub:"RBC Connect events, and the question nobody asks after them"},
- {id:"library",name:"Resource Library",tag:"Always open",state:"open",x:300,b:134,w:158,h:102,
-  draw:(x,b,w,h)=>block(x,b,w,h,{body:"#c2705f",roof:"#3f4a57",cols:4,rows:2,door:"#f5e6c8"}),
-  sub:"Team tooling, runbooks, learning paths, and the return-offer criteria"},
- {id:"wrapped",name:"Wrapped Arena",tag:"Dec 1",state:"lock",x:800,b:134,w:176,h:104,
+ {id:"welcome",name:"Welcome Centre",tag:"Your profile",state:"done",x:270,b:646,w:390,h:0,
+  ship:true,px:470,py:756,
+  draw:()=>ship(),
+  sub:"The ship you arrived on: your profile, your team and the people around you"},
+ {id:"library",name:"Resource Library",tag:"Not opened yet",state:"idle",x:620,b:300,w:158,h:100,
+  draw:(x,b,w,h)=>block(x,b,w,h,{body:"#c2705f",roof:"#3f4a57",cols:4,rows:2,door:"#f5e6c8",awn:"#8a4a3e"}),
+  sub:"Every tool and link you need, in one list"},
+ {id:"connect",name:"Connect Plaza",tag:"3 upcoming",state:"open",x:900,b:300,w:165,h:120,
+  draw:(x,b,w,h)=>block(x,b,w,h,{body:"#7d9fd4",roof:"#3f4a57",cols:4,rows:3,awn:"#3f5f96"}),
+  sub:"Events from RBC Connect, and the points you earn for going"},
+ {id:"wrapped",name:"Wrapped Arena",tag:"Dec 1",state:"lock",x:1230,b:300,w:176,h:102,
   draw:(x,b,w,h)=>block(x,b,w,h,{body:"#8b5cf6",roof:"#4c1d95",cols:5,rows:2,door:"#f5e6c8"}),
-  sub:"Your month as a highlight reel, and the only thing your manager sees"}
+  sub:"Your month at RBC, as a highlight reel"},
+ {id:"checklist",name:"Onboarding Checklist",tag:"7 of 12",state:"now",x:700,b:560,w:152,h:105,
+  draw:(x,b,w,h)=>house(x,b,w,h,{body:"#e8705f",roof:"#3f4a57",cols:3,rows:1,chim:true}),
+  sub:"Everything to get set up in your first weeks"},
+ {id:"checkin",name:"Check-in Station",tag:"Due Friday",state:"hero",x:980,b:575,w:230,h:150,
+  draw:(x,b,w,h)=>block(x,b,w,h,{body:"#f0b259",roof:"#b45309",cols:5,rows:2,door:"#b45309",awn:"#b45309",awnW:110}),
+  sub:"Your weekly check-in, general feedback and support requests, all in one place"},
+ {id:"mentor",name:"Mentor Hall",tag:"Action needed",state:"warn",x:1270,b:560,w:162,h:115,
+  draw:(x,b,w,h)=>house(x,b,w,h,{body:"#b06a9e",roof:"#3f4a57",cols:3,rows:2,rh:50}),
+  sub:"Your mentor, your goals and your meeting history"},
+ {id:"tia",name:"TIA Tower",tag:"Opens TIA",state:"open",x:320,b:304,w:96,h:130,
+  draw:(x,b,w,h)=>tower(x,b,w,h,{body:"#5aa9b5"}),
+  sub:"RBC's assistant for policy, HR and general questions"}
 ];
 
-const ROAD="M 10 750 L 1330 750 Q 1400 750 1400 680 L 1400 540 Q 1400 470 1330 470 L 175 470 Q 105 470 105 400 L 105 264 Q 105 194 175 194 L 1490 194";
+function ship(){
+  let s=`<g>`;
+  /* hull */
+  s+=`<path d="M268 648 H664 L616 740 Q466 766 316 740 Z" fill="#c25d4f"/>`;
+  s+=`<path d="M268 648 H664 v16 H268 Z" fill="#f5e6c8"/>`;
+  s+=`<path d="M300 700 h330" stroke="rgba(255,255,255,.3)" stroke-width="4"/>`;
+  /* portholes */
+  for(let i=0;i<5;i++)s+=`<circle cx="${344+i*62}" cy="${694}" r="9" fill="#fdf6e8" stroke="#3f4a57" stroke-width="2.4"/>`;
+  /* deck house */
+  s+=r(420,566,160,82,"#f5e6c8",4)+r(414,556,172,14,"#3f4a57",3);
+  s+=winGrid(420,566,160,70,3,1,30,26);
+  /* funnel */
+  s+=r(600,576,34,72,"#e8a34f",4)+r(596,568,42,13,"#3f4a57",3);
+  /* bridge deck rail */
+  s+=`<path d="M276 648 V626 M300 648 V626 M324 648 V626 M348 648 V626 M372 648 V626 M396 648 V626" stroke="#f5e6c8" stroke-width="4"/>`;
+  s+=`<path d="M268 626 H410" stroke="#f5e6c8" stroke-width="5" stroke-linecap="round"/>`;
+  /* mast and flag */
+  s+=`<path d="M392 644 V452" stroke="#6b5a4a" stroke-width="7" stroke-linecap="round"/>`;
+  s+=`<path d="M356 530 H428" stroke="#6b5a4a" stroke-width="5" stroke-linecap="round"/>`;
+  s+=`<path d="M396 458 q56 12 56 25 q0 13 -56 25 Z" fill="#e8705f"/>`;
+  s+=r(374,520,36,22,"#f5e6c8",4)+r(372,516,40,8,"#6b5a4a",3);
+  s+=`<path d="M392 644 L352 560 M392 644 L436 560" stroke="#6b5a4a" stroke-width="2.6" opacity=".5"/>`;
+  /* gangway to the quay */
+  s+=`<path d="M644 640 L742 592 l16 24 L660 664 Z" fill="#b98a5e"/>`;
+  s+=`<path d="M650 646 L748 598" stroke="rgba(255,255,255,.35)" stroke-width="3"/>`;
+  /* name board */
+  s+=`<rect x="430" y="676" width="140" height="26" rx="7" fill="#f5e6c8"/>`;
+  s+=`<text x="500" y="694" text-anchor="middle" font-size="13" font-weight="800" fill="#c25d4f" letter-spacing="1">WELCOME</text>`;
+  return s+`</g>`;
+}
+function lighthouse(x,b){
+  const w=64,h=186;
+  let s=`<g>`;
+  s+=`<ellipse cx="${x+w/2}" cy="${b+4}" rx="58" ry="14" fill="#a79c8c"/>`;
+  s+=`<ellipse cx="${x+w/2}" cy="${b-2}" rx="50" ry="11" fill="#b9af9f"/>`;
+  s+=`<path d="M${x+4} ${b} L${x+14} ${b-h} h${w-28} l10 ${h} Z" fill="#f5e6c8"/>`;
+  s+=`<path d="M${x+9} ${b-36} h${w-18} l2 26 h${-w+14} Z" fill="#e8705f"/>`;
+  s+=`<path d="M${x+15} ${b-104} h${w-30} l2 26 h${-w+26} Z" fill="#e8705f"/>`;
+  s+=`<rect x="${x+16}" y="${b-h-22}" width="${w-32}" height="24" rx="3" fill="#3f4a57"/>`;
+  s+=`<rect x="${x+21}" y="${b-h-18}" width="${w-42}" height="16" rx="2" fill="#ffe08a"/>`;
+  s+=`<path d="M${x+12} ${b-h-22} h${w-24}" stroke="#3f4a57" stroke-width="5" stroke-linecap="round"/>`;
+  s+=`<path d="M${x+w/2-6} ${b-h-26} l6 -14 l6 14 Z" fill="#c25d4f"/>`;
+  s+=`<path d="M${x+w+6} ${b-h-14} l34 -12 M${x+w+6} ${b-h-8} l36 2" stroke="#ffe08a" stroke-width="4" stroke-linecap="round" opacity=".85"/>`;
+  s+=`<path d="M${x-6} ${b-h-14} l-34 -12 M${x-6} ${b-h-8} l-36 2" stroke="#ffe08a" stroke-width="4" stroke-linecap="round" opacity=".85"/>`;
+  return s+`</g>`;
+}
+function bench(x,b,s=1){
+  return `<g><rect x="${x-20*s}" y="${b-14*s}" width="${40*s}" height="${6*s}" rx="2" fill="#b98a5e"/>
+  <rect x="${x-20*s}" y="${b-24*s}" width="${40*s}" height="${5*s}" rx="2" fill="#b98a5e"/>
+  <rect x="${x-16*s}" y="${b-14*s}" width="${4*s}" height="${14*s}" fill="#8a6440"/>
+  <rect x="${x+12*s}" y="${b-14*s}" width="${4*s}" height="${14*s}" fill="#8a6440"/></g>`;
+}
+function buoy(x,y,c="#e8705f"){
+  return `<g><ellipse cx="${x}" cy="${y+10}" rx="16" ry="5" fill="rgba(255,255,255,.35)"/>
+  <path d="M${x-11} ${y+8} q11 -34 22 0 Z" fill="${c}"/>
+  <path d="M${x} ${y-10} v-12" stroke="#3f4a57" stroke-width="3"/></g>`;
+}
+function crate(x,b,s=1,c="#c89a62"){
+  return `<g><rect x="${x-18*s}" y="${b-32*s}" width="${36*s}" height="${32*s}" rx="3" fill="${c}"/>
+  <path d="M${x-18*s} ${b-22*s} h${36*s} M${x} ${b-32*s} v${32*s}" stroke="rgba(0,0,0,.14)" stroke-width="${3*s}"/></g>`;
+}
+function gull(x,y,s=1){
+  return `<path d="M${x-14*s} ${y} q7 -8 14 0 q7 -8 14 0" fill="none" stroke="#5b6670" stroke-width="${2.6*s}" stroke-linecap="round"/>`;
+}
+function bollard(x,b){
+  return `<g><rect x="${x-7}" y="${b-20}" width="14" height="20" rx="5" fill="#5b6670"/>
+  <ellipse cx="${x}" cy="${b-21}" rx="9" ry="4" fill="#6f7a84"/></g>`;
+}
+
+const SEA="M0 432 Q 190 462 312 522 Q 470 566 628 604 Q 790 646 906 706 Q 1056 778 1156 860 L 0 860 Z";
 
 function buildMap(){
   let s=`<svg class="map" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">`;
-  /* sky */
-  s+=cloud(250,55,1)+cloud(700,44,.8)+cloud(1215,62,.9);
-  /* river along the bottom */
-  s+=`<path d="M0 812 Q 230 792 460 814 T 920 814 T 1500 800 L1500 860 L0 860Z" fill="${C.water}"/>`;
-  s+=`<path d="M80 832h66M186 846h52M340 830h60M520 844h54M700 830h62M880 846h56M1060 832h58M1240 844h52M1390 830h60"
-      stroke="rgba(255,255,255,.55)" stroke-width="4" stroke-linecap="round"/>`;
-  s+=fish(290,838)+fish(640,832,"#e8705f")+fish(1020,840,"#f0b259");
-  /* road */
-  s+=`<path d="${ROAD}" fill="none" stroke="${C.roadEdge}" stroke-width="52" stroke-linecap="round" stroke-linejoin="round"/>`;
-  s+=`<path d="${ROAD}" fill="none" stroke="${C.road}" stroke-width="46" stroke-linecap="round" stroke-linejoin="round"/>`;
-  s+=`<path id="roadline" d="${ROAD}" fill="none" stroke="#fff" stroke-width="3.4" stroke-dasharray="17 19" stroke-linecap="round"/>`;
-  s+=`<path id="roadprog" d="${ROAD}" fill="none" stroke="#1565d8" stroke-width="7" stroke-linecap="round" opacity=".5"/>`;
-  /* scenery, bottom band */
-  s+=bush(128,706,.9)+lamp(382,704)+tree(430,702,1,"#7ab87f")+tree(478,708,.8,"#f0a35c")+bush(520,712,1)
-   +tree(810,704,.95,"#86c48c")+tree(858,710,.75,"#f3b55f")+lamp(912,706)+bush(968,712,1.05);
-  /* scenery, middle band */
-  s+=lamp(152,428)+tree(430,422,.9,"#86c48c")+lamp(498,426)+tree(552,420,.8,"#f0a35c")+bush(596,430,.95)
-   +tree(906,424,.95,"#7ab87f")+tree(954,428,.75,"#f3b55f")+bush(1002,432,1)+lamp(1066,426)
-   +tree(1300,422,.85,"#7ab87f")+bush(1346,430,.9);
-  /* scenery, top band */
-  s+=tree(180,146,.9,"#7ab87f")+bush(228,152,.9)+tree(520,144,.95,"#f0a35c")+tree(572,150,.75,"#86c48c")
-   +lamp(642,148)+bush(702,154,1)+tree(1046,144,.9,"#7ab87f")+bush(1094,150,1)
-   +tree(1196,146,.85,"#f0a35c")+lamp(1268,148);
-  /* finish */
-  s+=flag(1390,164)+`<text x="1390" y="192" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0f7156">Week 16</text>`;
-  /* parking strip */
-  s+=r(1222,556,142,112,"#cfd8e0",9)+`<path d="M1236 576h114M1236 612h114" stroke="#fff" stroke-width="3"/>`;
-  s+=car(1293,596,"#f0b259")+car(1293,634,"#b06a9e")+car(1293,666,"#e8705f");
-  /* cars on the road */
-  s+=car(900,750,"#e8705f")+car(420,470,"#7d9fd4",true)+car(1120,194,"#86c48c");
+  s+=`<defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#cfe6f5"/><stop offset="1" stop-color="#eef5f1"/></linearGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#7cc6c2"/><stop offset="1" stop-color="#4ea7ab"/></linearGradient></defs>`;
+  s+=r(0,0,W,H,"url(#sky)");
+  s+=cloud(300,96,1)+cloud(980,74,.8)+cloud(1380,140,.75);
+  s+=gull(760,120,1)+gull(820,96,.8)+gull(700,86,.7);
+  /* land */
+  s+=r(0,0,W,H,"#dfeae2");
+  s+=`<path d="M0 0 H${W} V300 Q 1100 260 720 286 Q 360 310 0 268 Z" fill="#e7efe6"/>`;
+  /* sea */
+  s+=`<path d="${SEA}" fill="url(#sea)"/>`;
+  s+=`<path d="M20 500h70M130 556h56M60 612h74M250 596h60M200 664h70M380 652h64M120 724h80M330 740h62M520 700h66M640 672h54M470 790h72M700 760h60M860 798h66M1020 836h64"
+      stroke="rgba(255,255,255,.4)" stroke-width="5" stroke-linecap="round"/>`;
+  /* quay edge */
+  s+=`<path d="${SEA}" fill="none" stroke="#c2ad8d" stroke-width="14"/>`;
+  s+=`<path d="M628 604 Q 790 646 906 706 Q 1056 778 1156 860" fill="none" stroke="#b98a5e" stroke-width="9"/>`;
+  /* mooring posts along the quay */
+  s+=bollard(712,620)+bollard(820,668)+bollard(944,734)+bollard(1058,800);
+  /* the lighthouse the product is named after */
+  s+=lighthouse(150,410);
+  /* harbour clutter */
+  s+=crate(1012,748,.8,"#d8ab6d")+crate(1082,792,.72,"#b98a5e")+crate(1116,806,.6);
+  s+=buoy(240,600)+buoy(430,712,"#f0b259")+buoy(96,560,"#7d9fd4");
+  /* ship and shops sit on top */
+  s+=tree(222,180,.85,"#7ab87f")+bush(268,188,.75)+tree(66,256,.85,"#f0a35c")+bush(124,242,.8)
+   +tree(474,250,.8,"#7ab87f")+bush(206,330,.8)+lamp(468,320)
+   +tree(560,290,.95,"#7ab87f")+tree(600,296,.75,"#f0a35c")+bush(840,300,.9)
+   +tree(1120,292,.9,"#86c48c")+tree(1172,298,.72,"#f3b55f")+bush(1458,300,.85)
+   +lamp(880,470)+bench(948,480,.95)+tree(1240,470,.88,"#7ab87f")+bush(1288,500,.85)
+   +lamp(660,512)+tree(892,420,.8,"#f0a35c")+bush(640,436,.8)
+   +tree(1448,470,.8,"#86c48c")+bush(1180,560,.8)+lamp(1196,610);
 
-  /* buildings */
   BLD.forEach(x=>{
-    const lock=x.state==="lock";
-    s+=`<g class="bld ${lock?"locked":""}" data-id="${x.id}" role="button" tabindex="0">`;
-    s+=`<ellipse cx="${x.x+x.w/2}" cy="${x.b+5}" rx="${x.w*0.56}" ry="9" fill="rgba(16,24,40,.09)"/>`;
+    s+=`<g class="bld ${x.state==="lock"?"locked":""}" data-id="${x.id}" role="button" tabindex="0">`;
+    if(!x.ship&&!x.light)
+      s+=`<ellipse cx="${x.x+x.w/2}" cy="${x.b+5}" rx="${x.w*0.56}" ry="9" fill="rgba(16,24,40,.09)"/>`;
     s+=x.draw(x.x,x.b,x.w,x.h);
     if(x.id==="checkin"){
-      s+=`<g><rect x="${x.x+x.w/2-58}" y="${x.b-x.h-52}" width="116" height="31" rx="9" fill="#b45309"/>
-      <text x="${x.x+x.w/2}" y="${x.b-x.h-31}" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">CHECK IN</text>
-      <text x="${x.x+x.w/2+76}" y="${x.b-x.h-28}" text-anchor="middle" font-size="26">&#128293;</text></g>`;
+      const cx=x.x+x.w/2, ty=x.b-x.h-54;
+      s+=`<g><rect x="${cx-62}" y="${ty}" width="124" height="32" rx="9" fill="#b45309"/>
+      <text x="${cx}" y="${ty+21}" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">CHECK IN</text>
+      <text x="${cx+82}" y="${ty+24}" text-anchor="middle" font-size="27">&#128293;</text></g>`;
     }
-    /* plaque */
-    const px=x.x+x.w/2, py=x.b+16;
-    const nameW=x.name.length*7.45, tagW=x.tag.length*6.5+16;
-    const pw=Math.max(nameW+tagW+46,172);
+    const px=x.px||x.x+x.w/2, py=x.py||x.b+16;
+    const nameW=x.name.length*7.45, tagW=x.tag.length*6.5+16, pw=Math.max(nameW+tagW+46,172);
     const col=x.state==="done"?"#0f7156":x.state==="hero"?"#b45309":x.state==="warn"?"#b3261e":
-              x.state==="now"?"#1565d8":x.state==="lock"?"#98a2b3":"#a16207";
+              x.state==="now"?"#1565d8":(x.state==="lock"||x.state==="idle")?"#98a2b3":"#a16207";
     s+=`<g class="plaque"><rect x="${px-pw/2}" y="${py}" width="${pw}" height="34" rx="10" fill="#fff" opacity=".96"/>
       <text x="${px-pw/2+14}" y="${py+22}" font-size="13.5" font-weight="700" fill="#101828">${x.name}</text>
       <rect x="${px+pw/2-14-tagW}" y="${py+9}" width="${tagW}" height="17" rx="8" fill="${col}" opacity=".15"/>
       <text x="${px+pw/2-14-tagW/2}" y="${py+21.5}" font-size="10.5" font-weight="700" fill="${col}" text-anchor="middle">${x.tag}</text>
       </g></g>`;
   });
-  s+=`<g id="youpin"></g>`;
-  s+=`</svg>`;
-  return s;
+
+  /* you, just off the gangway */
+  s+=`<g><ellipse cx="860" cy="678" rx="14" ry="5" fill="rgba(16,24,40,.16)"/>
+    <path d="M860 676c0 0 17-18 17-30a17 17 0 1 0 -34 0c0 12 17 30 17 30Z" fill="#1565d8"/>
+    <circle cx="860" cy="647" r="11" fill="#fff"/>
+    <text x="860" y="651" text-anchor="middle" font-size="11" font-weight="700" fill="#1565d8">AO</text></g>`;
+  return s+`</svg>`;
 }
 $("#mapslot").innerHTML=buildMap();
-
-/* progress + pin */
-(function(){
-  const p=document.getElementById("roadprog");
-  const L=p.getTotalLength(),F=0.45;
-  p.style.strokeDasharray=L;p.style.strokeDashoffset=L*(1-F);
-  const pt=p.getPointAtLength(L*F);
-  document.getElementById("youpin").innerHTML=
-    `<g transform="translate(${pt.x},${pt.y})">
-      <ellipse cx="0" cy="4" rx="15" ry="5" fill="rgba(16,24,40,.18)"/>
-      <path d="M0 2c0 0 17-18 17-30A17 17 0 1 0 -17 -28C-17 -16 0 2 0 2Z" fill="#1565d8"/>
-      <circle cx="0" cy="-29" r="11" fill="#fff"/>
-      <text x="0" y="-25" text-anchor="middle" font-size="11" font-weight="700" fill="#1565d8">AO</text>
-    </g>`;
-})();
 
 document.querySelectorAll(".bld").forEach(g=>{
   g.addEventListener("click",()=>openB(g.dataset.id));
@@ -554,181 +672,321 @@ document.querySelectorAll(".bld").forEach(g=>{
 });
 
 /* ================= STATE ================= */
-let streak=5, xp=1240, done=7;
+let streak=5, pts=620, done=7, evts=7, ptsOnboarding=true;
+let goals=[
+ {t:"Own a payments service end to end before week 12",st:"On track",src:"Set with Priya, Oct 6",ic:"&#9679;",c:"p-blue",n:false},
+ {t:"Write one runbook page the pod keeps using",st:"Done",src:"Set with Priya, Oct 6",ic:"&#10003;",c:"p-green",n:false},
+ {t:"Spend a day pairing with the data platform team",st:"New",src:"From Priya's email reply, Nov 12",ic:"&#9679;",c:"p-blue",n:false}
+];
 const checklist=[
  {g:"Access and setup",items:[
-  {t:"Laptop, VPN and MFA",xp:100,on:true,auto:"Auto-ticked from the HR portal"},
-  {t:"Core systems access",xp:100,on:true,auto:"Auto-ticked from the HR portal"},
-  {t:"Artifactory group access",xp:100,on:false,block:true},
-  {t:"Dev environment running locally",xp:150,on:true,auto:"Auto-detected from GitHub"}]},
+  {t:"Laptop, VPN and MFA",p:20,on:true,auto:"Completed automatically"},
+  {t:"Core systems access",p:20,on:true,auto:"Completed automatically"},
+  {t:"Artifactory group access",p:20,on:false,block:true},
+  {t:"Dev environment running locally",p:30,on:true,auto:"Completed automatically"}]},
  {g:"People",items:[
-  {t:"Meet your pod, 3 intro coffees",xp:100,on:true},
-  {t:"Mentor matched and first 1:1 booked",xp:150,on:true},
-  {t:"Name your go-to person when stuck",xp:100,on:false},
-  {t:"Join the 3 channels your pod lives in",xp:50,on:true,auto:"Auto-detected from Slack"}]},
+  {t:"Meet your pod, 3 intro coffees",p:20,on:true},
+  {t:"Mentor matched and first meeting booked",p:30,on:true},
+  {t:"Name your go-to person when stuck",p:20,on:false},
+  {t:"Join the 3 channels your pod uses",p:10,on:true,auto:"Completed automatically"}]},
  {g:"First delivery",items:[
-  {t:"First commit merged",xp:150,on:true,auto:"Auto-detected from GitHub"},
-  {t:"Own a ticket end to end",xp:200,on:false},
-  {t:"Shadow a production incident",xp:200,on:false},
-  {t:"Demo at team standup",xp:250,on:false}]}
+  {t:"First commit merged",p:30,on:true,auto:"Completed automatically"},
+  {t:"Own a ticket end to end",p:40,on:false},
+  {t:"Shadow a production incident",p:40,on:false},
+  {t:"Demo at team standup",p:50,on:false}]}
 ];
 const feed=[
- {t:"Pod standup moved to 10:15 so co-ops with 9:00 classes can attend.",m:"4 of you asked. Shipped 2 days ago."},
- {t:"Your team now has a tooling and pipeline page, not just the laptop doc.",m:"You asked twice. Shipped last week."},
- {t:"Return-offer criteria are being written down and published.",m:"17 of you asked. In review."}
+ {t:"Pod standup moved to 10:15 so co-ops with 9:00 classes can attend.",m:"Shipped 2 days ago"},
+ {t:"Your team now has a tooling and pipeline page.",m:"Shipped last week"},
+ {t:"Return-offer criteria are being published.",m:"In review"}
 ];
-const answers={
- "How do I get Artifactory access?":{a:"Your pod uses the <b>cmt-build</b> group. Raise an access request in the HR portal under Tooling, pick cmt-build, and have your pod lead approve it. Median turnaround on your floor is 2 days. Your laptop doc does not mention this, which is why it keeps coming up.",m:"19 students have asked this. It is theme #1 on the program board and the fix shipped Tuesday."},
- "Who reviews PRs on my team?":{a:"Two reviewers are required, one from the <b>payments-core</b> owners group. Raj and Lin cover most of them. Lin's queue is usually under 4 hours, Raj's is 2 days. Post it in the pod channel too, that is where it actually gets picked up.",m:"Logged. Ramp counts the topic, never the words."},
- "What does a strong co-op term look like?":{a:"On your team it is three things: one feature owned end to end, one runbook or doc left behind, and a standup demo. Written down nowhere until now, which is why 14 people have asked.",m:"This gap is theme #2. The program team is drafting a one-page expectations sheet for week 1."}
-};
 
-/* ================= PANELS ================= */
+/* ================= STUDENT PANELS ================= */
 function P(id){
  if(id==="welcome")return `
-  <h4>Your first three days</h4>
-  <div class="tiles">
-   <div class="tile"><b>Who you work for</b><p>Capital Markets Technology, inside Capital Markets. 420 people, 11 pods.</p></div>
-   <div class="tile"><b>What your pod ships</b><p>Payments core services. Roughly 40 releases a quarter.</p></div>
-   <div class="tile"><b>Your term</b><p>16 weeks, 2 check-in milestones, return-offer decision in week 14.</p></div>
-   <div class="tile"><b>Who to ask</b><p>Buddy for the day to day, mentor for the term. Both named below.</p></div>
-  </div>
+  <h4>Your profile</h4>
+  <div class="note" style="margin-bottom:12px">Submitted when you joined. Lighthouse used this to match you with a mentor.</div>
+  <div class="kv"><span>Role</span><b>Software Developer co-op</b></div>
+  <div class="kv"><span>Team</span><b>Capital Markets Technology, Pod 4</b></div>
+  <div class="kv"><span>Term</span><b>16 weeks, Sept to Dec 2026</b></div>
+  <div class="kv"><span>Interests</span><b>Data platforms, machine learning</b></div>
+  <div class="kv"><span>Want to learn</span><b>How a release ships end to end</b></div>
+  <div class="kv"><span>Where you want to be in 2 years</span><b>Data and ML</b></div>
+  <button class="btn sm" style="margin-top:12px" onclick="toast('Profile reopened. Changes refresh your mentor match.')">Edit profile</button>
+  <h4>Your mentor match</h4>
+  <div class="person"><div class="pav" style="background:#e8f5f0;color:#0f7156">PS</div>
+    <div><b>Priya Shah</b><span>Director, Payments Engineering</span></div></div>
+  <div class="note">Matched on data and ML, your business unit, and her availability for a 16 week term.</div>
   <h4>Your pod</h4>
-  ${[["LT","Lin Tran","Senior dev, your buddy","#eaf1fd","#1565d8"],
-     ["RK","Raj Kapoor","Pod lead","#e8f5f0","#0f7156"],
-     ["SM","Sofia Marin","Dev, 2 years in, ex co-op","#fef6e7","#b54708"],
-     ["DM","Dana Mensah","Early Talent program","#f0ecfc","#5b3fb5"]]
-   .map(p=>`<div class="person"><div class="pav" style="background:${p[3]};color:${p[4]}">${p[0]}</div>
-     <div><b>${p[1]}</b><span>${p[2]}</span></div></div>`).join("")}
-  <div class="note" style="margin-top:14px">Nothing on this screen was typed by you or by HR twice. It is read from the HR portal and your pod's directory on day one.</div>`;
+  ${peopleRows([["LT","Lin Tran","Senior dev, your buddy","#eaf1fd","#1565d8"],
+    ["RK","Raj Kapoor","Pod lead","#e8f5f0","#0f7156"],
+    ["SM","Sofia Marin","Developer, former co-op","#fef6e7","#b54708"],
+    ["DM","Dana Mensah","Early Talent program manager","#f0ecfc","#5b3fb5"]])}`;
 
  if(id==="checklist"){
   const total=checklist.reduce((a,g)=>a+g.items.length,0);
-  return `<div class="note" style="margin-bottom:14px"><b>${done} of ${total} done.</b> Six of these tick themselves from systems you already use, so the list stays honest without you maintaining it.</div>
-  ${checklist.map((g,gi)=>`<h4>${g.g}</h4>${g.items.map((it,ii)=>`
-    <div class="check ${it.block?"block":""}">
-      <div class="box ${it.on?"on":""}" onclick="tick(${gi},${ii})">${it.on?"&#10003;":""}</div>
-      <div><p>${it.t}</p>
-        ${it.block?`<span style="color:#b54708"><b>Blocked 4 days.</b> You are the 17th co-op blocked on this in 60 days, so it is already a program flag.</span>`
-          :it.auto?`<span>${it.auto}</span>`:`<span>Tick it when it is true</span>`}</div>
-      <div class="xp">${it.xp} XP</div>
-    </div>`).join("")}`).join("")}
-  <div class="note" style="margin-top:14px">An item that sits unticked for too long is not nagging. It is the program finding out that your access request is stuck.</div>`;
+  let out=`<div class="note" style="margin-bottom:14px"><b>${done} of ${total} done.</b> Items marked automatic are ticked for you when the system confirms them.</div>`;
+  checklist.forEach((g,gi)=>{
+    out+=`<h4>${g.g}</h4>`;
+    g.items.forEach((it,ii)=>{
+      let meta;
+      if(it.block)meta=`<span style="color:#b54708"><b>Blocked 4 days.</b> Your buddy and the program team have been notified.</span>`;
+      else if(it.auto)meta=`<span>${it.auto}</span>`;
+      else meta=`<span>Tick when done</span>`;
+      out+=`<div class="check ${it.block?"block":""}">
+        <div class="box ${it.on?"on":""}" onclick="tick(${gi},${ii})">${it.on?"&#10003;":""}</div>
+        <div><p>${it.t}</p>${meta}</div>
+        ${ptsOnboarding?`<div class="xp">${it.p} pts</div>`:""}</div>`;
+    });
+  });
+  return out;
  }
 
  if(id==="mentor")return `
   <div class="note" style="background:var(--red-soft);color:#7f1d1d;margin-bottom:14px">
-   <b>Your last mentor 1:1 was 24 days ago.</b> The cohort median is 9. This is already flag #1 on the program dashboard, and your pod lead saw it before you had to raise it.</div>
-  <h4>Matched for your term</h4>
+   <b>No meeting booked.</b> Your last one was 24 days ago. Priya has been reminded.</div>
+  <h4>Your mentor</h4>
   <div class="person"><div class="pav" style="background:#e8f5f0;color:#0f7156">PS</div>
-    <div><b>Priya Shah</b><span>Director, Payments Engineering. Matched on your stated interest in data and ML.</span></div></div>
+    <div><b>Priya Shah</b><span>Director, Payments Engineering</span></div></div>
   <div class="person"><div class="pav" style="background:#eaf1fd;color:#1565d8">LT</div>
-    <div><b>Lin Tran</b><span>Senior dev, your buddy. For the day to day, not the term.</span></div></div>
-  <h4>Next step</h4>
-  <button class="btn pri" onclick="toast('20 minutes booked with Priya for Tuesday. The flag closes when it happens, not when it is booked.')">Book 20 minutes with Priya</button>
-  <button class="btn" style="margin-left:7px" onclick="toast('Asked. Lin gets a nudge, not a report.')">Ask Lin something</button>
-  <h4>What gets measured here</h4>
-  <div class="kv"><span>Days since last mentor 1:1</span><b class="mono" style="color:var(--red)">24</b></div>
-  <div class="kv"><span>Cohort median</span><b class="mono">9</b></div>
-  <div class="kv"><span>Recurring team meetings you are invited to</span><b class="mono">2 of 5</b></div>
-  <div class="note" style="margin-top:14px">All three come from calendar metadata. Nobody read an invite, nobody filled in a form.</div>`;
+    <div><b>Lin Tran</b><span>Your buddy, for day to day questions</span></div></div>
+  <div style="margin-top:12px">
+    <button class="btn pri" onclick="toast('Request sent. Priya gets an email with your availability.')">Request a meeting</button>
+    <button class="btn" style="margin-left:7px" onclick="toast('Opening Webex.')">Join on Webex</button>
+  </div>
+  <h4>Your goals</h4>
+  <div id="goals">${goalRows()}</div>
+  <h4>Meeting history</h4>
+  <div class="evt"><div class="d"><b>12</b><span>NOV</span></div>
+    <div class="bd"><b>Mentor meeting on Webex</b><p>Summary confirmed by Priya&apos;s reply</p></div>
+    <button class="btn sm" onclick="toast('Opening the summary from Priya&apos;s reply.')">Summary</button></div>
+  <div class="evt"><div class="d"><b>06</b><span>OCT</span></div>
+    <div class="bd"><b>First meeting on Webex</b><p>Goals set in Priya&apos;s reply</p></div>
+    <button class="btn sm" onclick="toast('Opening the summary from Priya&apos;s reply.')">Summary</button></div>
+  <div class="note" style="margin-top:12px"><b>You do not take notes.</b> Meetings run on Webex.
+   Afterwards Lighthouse emails your mentor the transcript summary. They reply to that email to confirm or correct it,
+   and the summary plus any new goals land here. Your mentor never has to log in to anything.</div>`;
 
- if(id==="checkin"){
-  const days=["W1","W2","W3","W4","W5","W6"];
-  return `<div class="note" style="background:#fff1e6;color:#9a3412;margin-bottom:12px">
-   <b>${streak} week streak.</b> Break it and nothing bad happens to you. The program just loses its earliest signal, which is why it is a streak and not a survey.</div>
-  <div class="streak">${days.map((d,i)=>`<div class="sd ${i<streak?"hit":""} ${i===streak?"now":""}">
-    <i>${i<streak?"&#128293;":i===streak?"&#9679;":""}</i><span>${d}</span></div>`).join("")}</div>
-  <div class="anon" style="margin-top:16px"><span>&#128274;</span><div><b>How this is handled</b>
-   Answers roll up to your cohort. A comment reaches your manager only once 3 or more people say something similar. Below 3, it goes to the program team with your name removed.</div></div>
-  <div id="pulse"></div>
-  <h4>What changed because of you</h4>
-  <ul class="feed" id="feed" style="margin:0;padding:0"></ul>`;
- }
+ if(id==="checkin")return `<div class="seg2">
+    <button id="ci-weekly" onclick="setCi('weekly')">Weekly check-in</button>
+    <button id="ci-feedback" onclick="setCi('feedback')">Feedback</button>
+    <button id="ci-support" onclick="setCi('support')">Support</button>
+   </div><div id="citab"></div>`;
 
  if(id==="tia")return `
-  <div class="note" style="margin-bottom:14px"><b>We did not rebuild this.</b> TIA already answers RBC questions. Ramp puts it on the road where you are, grounds it in your pod's own runbooks, and counts which topics keep coming back.</div>
-  <div class="chips">
-   <button class="chip" onclick="ask('How do I get Artifactory access?')">How do I get Artifactory access?</button>
-   <button class="chip" onclick="ask('Who reviews PRs on my team?')">Who reviews PRs on my team?</button>
-   <button class="chip" onclick="ask('What does a strong co-op term look like?')">What does a strong co-op term look like?</button>
-  </div>
-  <div class="askrow"><input id="askin" placeholder="Ask anything about your team, tools or term"
-    onkeydown="if(event.key==='Enter')ask(this.value)">
-   <button class="btn pri" onclick="ask(document.getElementById('askin').value)">Ask</button></div>
-  <div id="ans"></div>
-  <h4>Why this is the best signal you have</h4>
-  <div class="note">A question asked once is a person. The same question asked 19 times is a missing page in the onboarding pack. Ramp stores the topic and the count, never your words.</div>`;
+  <h4>What TIA is</h4>
+  <p style="font-size:13px;margin:0 0 12px">TIA is RBC's internal assistant. It answers questions about HR policy, benefits, time off, expenses, IT support and general how-to at the bank. It is already available to you as an employee.</p>
+  <h4>What to ask it</h4>
+  <ul class="bul">
+    <li><b>HR and payroll</b><span>Time off, pay dates, benefits, expense claims</span></li>
+    <li><b>IT and access</b><span>Password resets, software requests, device support</span></li>
+    <li><b>Policy</b><span>Travel, conduct, working arrangements</span></li>
+  </ul>
+  <h4>What to ask a person instead</h4>
+  <ul class="bul">
+    <li><b>Your buddy, Lin Tran</b><span>Anything about your team's code, tools or pipelines</span></li>
+    <li><b>Your mentor, Priya Shah</b><span>Career questions and what a strong term looks like</span></li>
+  </ul>
+  <button class="btn pri" style="margin-top:16px" onclick="toast('Opening TIA.')">Open TIA</button>
+  <div class="note" style="margin-top:12px">TIA opens in its own window. Lighthouse does not sit in the middle of your conversation with it.</div>`;
 
- if(id==="connect")return `
-  <h4>Coming up on RBC Connect</h4>
-  ${[["24","NOV","Intro to the data platform","Teams, 45 min"],
-     ["27","NOV","Co-op coffee with Capital Markets leads","In person, 10th floor"],
-     ["02","DEC","Internal mobility office hour","Added after 9 of you could not name a next step"]]
-   .map(e=>`<div class="evt"><div class="d"><b>${e[0]}</b><span>${e[1]}</span></div>
-     <div class="bd"><b>${e[2]}</b><p>${e[3]}</p></div>
-     <button class="btn sm" onclick="this.textContent='Registered';this.disabled=true;toast('Registered. Attendance and the two-week follow up are now linked to this event.')">Register</button></div>`).join("")}
-  <h4>You went to this. Did it help?</h4>
-  <div class="note" style="margin-bottom:10px">Asked two weeks later, not on the way out the door. This one question is the whole event dashboard on the program side.</div>
+ if(id==="connect"){
+  let up="";
+  [["24","NOV","Intro to the data platform","Teams, 45 min",50],
+   ["27","NOV","Co-op coffee with Capital Markets leads","In person, 10th floor",50],
+   ["02","DEC","Internal mobility office hour","In person, 10th floor",75]].forEach(e=>{
+    up+=`<div class="evt"><div class="d"><b>${e[0]}</b><span>${e[1]}</span></div>
+     <div class="bd"><b>${e[2]}</b><p>${e[3]} &middot; ${e[4]} pts</p></div>
+     <button class="btn sm" onclick="reg(this)">Register</button></div>`});
+  return `<div class="note" style="margin-bottom:14px"><b>${evts} events attended, ${evts*50} points earned.</b>
+   Points are added when your attendance is confirmed in RBC Connect, usually the next morning.</div>
+  <h4>Upcoming</h4>${up}
+  <h4>Rate what you went to</h4>
   <div class="evt"><div class="d"><b>06</b><span>NOV</span></div>
-   <div class="bd"><b>Executive fireside</b><p>You attended. 61 of 70 did.</p></div>
+   <div class="bd"><b>Executive fireside</b><p>Attended &middot; 50 pts earned</p></div>
    <div class="stars" id="stars">${[1,2,3,4,5].map(n=>`<button class="star" onclick="rate(${n})">&#9733;</button>`).join("")}</div></div>
   <div id="rated"></div>`;
+ }
 
  if(id==="library")return `
-  <h4>Your team, written down</h4>
-  <div class="tiles">
-   <div class="tile go"><b>Tooling and pipelines</b><p>Helios, corporate GitHub, Artifactory, how a release actually ships.</p></div>
-   <div class="tile go"><b>Runbooks</b><p>The 6 your pod uses on call. One of them you wrote.</p></div>
-   <div class="tile go"><b>Learning paths</b><p>Upskilling tracks, and which ones RBC pays for.</p></div>
-   <div class="tile go"><b>Return-offer criteria</b><p>Newly published because 17 of you asked.</p></div>
-  </div>
-  <div class="note" style="margin-top:14px"><b>This page exists because of the map.</b> Before Ramp there was a laptop setup doc and nothing else. Forty-one questions about access and environment setup is what got it written.</div>`;
+  <h4>Start here</h4>
+  <ul class="bul">
+    <li><b>RBC Connect</b><span>The bank's early talent hub. Every workshop, tech session, networking event and office hour is posted there, and that is where you register. Lighthouse reads your registrations and attendance from it, so going to events is what earns your points. Check it weekly, most sessions fill up.</span></li>
+    <li><b>Webex</b><span>Where your mentor meetings run. Join from Mentor Hall or from the calendar invite. Your mentor writes up a short summary afterwards, so you do not need to take notes during the call.</span></li>
+    <li><b>TIA</b><span>RBC's assistant for HR, policy and IT questions. Open it from TIA Tower on the map.</span></li>
+  </ul>
+  <h4>Your team</h4>
+  <ul class="bul">
+    <li><b>Tooling and pipelines</b><span>Helios, corporate GitHub, Artifactory, and how a release actually ships</span></li>
+    <li><b>Runbooks</b><span>The six your pod uses on call</span></li>
+    <li><b>Coding standards and review process</b><span>Who reviews, what gets blocked, how long it takes</span></li>
+  </ul>
+  <h4>Your term</h4>
+  <ul class="bul">
+    <li><b>Return-offer criteria</b><span>What is assessed and when the decision is made</span></li>
+    <li><b>Learning paths</b><span>Upskilling tracks and which certifications RBC pays for</span></li>
+    <li><b>HR portal</b><span>Pay, benefits, time off and access requests</span></li>
+  </ul>`;
 
  if(id==="wrapped")return `
-  <div class="note" style="margin-bottom:14px"><b>Preview. Unlocks December 1.</b> Monthly, not yearly, because a co-op term is only four of these.</div>
-  <div class="wrapped">
-   <div class="eyebrow">November, wrapped</div>
-   <h3>You shipped more than you think.</h3>
-   <div class="sub2">Amara O, Capital Markets Tech, Pod 4</div>
-   <div class="wcards">
-    <div class="wc"><b>14</b><span>pull requests merged, top 20% of your cohort</span></div>
-    <div class="wc"><b>6</b><span>teammates you unblocked in channels</span></div>
-    <div class="wc"><b>5 wk</b><span>longest check-in streak</span></div>
-    <div class="wc"><b>7 of 9</b><span>sessions attended</span></div>
-    <div class="wc wide"><b>Your first production incident</b><span>You shadowed the payments latency incident on Nov 12 and wrote the runbook page after it</span></div>
-    <div class="wc wide"><b>Most asked about: the data platform</b><span>So the program booked you an internal mobility office hour on Dec 2</span></div>
-   </div>
+  <div class="note" style="margin-bottom:14px"><b>Unlocks December 1.</b> You get one at the end of every month.</div>
+  <div class="wstory">
+    <div class="wslide w1">
+      <div class="eyebrow">November &middot; Wrapped</div>
+      <div class="wmid">You shipped more<br>than you think.</div>
+      <div class="wsub">Amara O, Capital Markets Technology, Pod 4</div>
+    </div>
+    <div class="wslide w2">
+      <div class="eyebrow">Your code</div>
+      <div class="wbig">14</div>
+      <div class="wsub">pull requests merged, putting you in the top 20% of your cohort</div>
+      <div class="wrow"><div><b>6</b><span>teammates unblocked</span></div>
+        <div><b>1</b><span>runbook page written</span></div>
+        <div><b>11 d</b><span>to first merge</span></div></div>
+    </div>
+    <div class="wslide w3">
+      <div class="eyebrow">Your month</div>
+      <div class="wbig">5</div>
+      <div class="wsub">weeks in a row you checked in, your longest streak so far</div>
+      <ul class="wlist">
+        <li><i>1</i>Intro tech session<span>attended</span></li>
+        <li><i>2</i>Payments latency incident<span>shadowed</span></li>
+        <li><i>3</i>Resume and interview clinic<span>attended</span></li>
+      </ul>
+    </div>
+    <div class="wslide w4">
+      <div class="eyebrow">Your moment</div>
+      <div class="wmid">Your first production incident</div>
+      <div class="wsub">On November 12 you shadowed the payments latency incident, then wrote the runbook page the pod now uses.</div>
+      <div class="wrow"><div><b>7 of 9</b><span>events attended</span></div>
+        <div><b>620</b><span>points</span></div></div>
+    </div>
   </div>
-  <h4>Who sees this</h4>
-  <button class="btn pri" onclick="toast('Sent to Priya. She sees achievements and engagement. She does not see a single check-in answer.')">Share with Priya, my mentor</button>
-  <div class="note" style="margin-top:12px"><b>This is how you get managers to adopt the tool.</b> The dashboard gives them problems. Wrapped gives them something good to say in a 1:1, and it is built from work the student actually did. Achievements and engagement are shared. Check-in answers never are.</div>`;
+  <h4>Share</h4>
+  <button class="btn pri" onclick="toast('Shared with Priya.')">Share with Priya, my mentor</button>
+  <div class="note" style="margin-top:12px">Your mentor sees your achievements and your activity. Your check-in answers are never shared.</div>`;
  return "";
 }
+function peopleRows(list){
+  return list.map(p=>`<div class="person"><div class="pav" style="background:${p[3]};color:${p[4]}">${p[0]}</div>
+    <div><b>${p[1]}</b><span>${p[2]}</span></div></div>`).join("");
+}
+function goalRows(){
+  return goals.map(g=>`<div class="goal ${g.n?"new":""}">
+    <div class="gi ${g.c}">${g.ic}</div>
+    <div><b>${g.t}</b><span>${g.st} &middot; ${g.src}</span></div></div>`).join("");
+}
 
-/* ---------- drawer ---------- */
+/* ================= ACTIONS ================= */
+function openPanel(title,sub,html){
+  $("#d-title").textContent=title;$("#d-sub").textContent=sub;$("#d-body").innerHTML=html;
+  $("#drawer").classList.add("on");$("#backdrop").classList.add("on");
+}
 function openB(id){
- const b=BLD.find(x=>x.id===id);
- $("#d-title").textContent=b.name;
- $("#d-sub").textContent=b.sub;
- $("#d-body").innerHTML=P(id);
- if(id==="checkin"){renderPulse();renderFeed();}
- $("#drawer").classList.add("on");$("#backdrop").classList.add("on");
+  const b=BLD.find(x=>x.id===id);
+  openPanel(b.name,b.sub,P(id));
+  if(id==="checkin")renderCi();
 }
 function closeDrawer(){$("#drawer").classList.remove("on");$("#backdrop").classList.remove("on")}
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeDrawer()});
 
 function tick(gi,ii){
- const it=checklist[gi].items[ii];
- if(it.block){toast("Still blocked. Ramp has already raised it, you do not have to chase it.");return}
- it.on=!it.on; done+=it.on?1:-1; xp+=it.on?it.xp:-it.xp;
- $("#hud-xp").textContent=xp.toLocaleString();
- $("#hud-steps").textContent=done+"/12";
- $("#d-body").innerHTML=P("checklist");
- if(it.on)toast("+"+it.xp+" XP. The program sees a step cleared, not a form filled in.");
+  const it=checklist[gi].items[ii];
+  if(it.block){toast("Still blocked. The program team is on it.");return}
+  it.on=!it.on; done+=it.on?1:-1;
+  if(ptsOnboarding){pts+=it.on?it.p:-it.p;$("#hud-pts").textContent=pts.toLocaleString()}
+  $("#hud-steps").textContent=done+"/12";
+  $("#d-body").innerHTML=P("checklist");
+  if(it.on&&ptsOnboarding)toast("+"+it.p+" points");
 }
+let ciTab="weekly", fbCat=null, fbAnon=false, spCat=null, spUrg=null;
+const FB_CATS=["Onboarding","Mentorship","Events","My team","Tools and access","Something else"];
+const SP_CATS=["Access or IT","My work","My mentor","Pay or HR","Wellbeing"];
+const SP_URG=["Can wait","This week","Blocking me"];
 
-/* ---------- check-in form ---------- */
+function setCi(t){ciTab=t;renderCi()}
+function renderCi(){
+  if(!document.getElementById("citab"))return;
+  ["weekly","feedback","support"].forEach(k=>{
+    const b=document.getElementById("ci-"+k); if(b)b.classList.toggle("on",k===ciTab);
+  });
+  document.getElementById("citab").innerHTML=
+    ciTab==="weekly"?weeklyHTML():ciTab==="feedback"?feedbackHTML():supportHTML();
+  if(ciTab==="weekly"){renderPulse()}
+  if(ciTab==="feedback"){renderFeed()}
+}
+function weeklyHTML(){
+  const days=["W1","W2","W3","W4","W5","W6"];
+  let dots="";
+  days.forEach((d,i)=>{dots+=`<div class="sd ${i<streak?"hit":""} ${i===streak?"now":""}">
+    <i>${i<streak?"&#128293;":i===streak?"&#9679;":""}</i><span>${d}</span></div>`});
+  return `<div class="win"><span>&#128336;</span><div><b>Open until Monday 17:00</b>
+    2 days and 4 hours left. Submit inside the window or the streak resets.</div></div>
+   <div class="note" style="background:#fff1e6;color:#9a3412;margin-bottom:4px">
+    <b>${streak} week streak.</b> Three questions, about 20 seconds.</div>
+   <div class="streak">${dots}</div>
+   <div class="anon" style="margin-top:16px"><span>&#128274;</span><div><b>Who sees this</b>
+    Answers roll up to your cohort. A comment reaches your manager only once three or more people say
+    something similar. Below that it goes to the program team with your name removed.</div></div>
+   <div id="pulse"></div>`;
+}
+function feedbackHTML(){
+  return `<div class="note" style="margin-bottom:14px">About the program rather than about your week.
+    Send this any time, as often as you like. It does not affect your streak.</div>
+   <h4>What is it about</h4>
+   <div class="chipsel">${FB_CATS.map((c,i)=>
+     `<button class="${fbCat===i?"on":""}" onclick="pickFb(${i})">${c}</button>`).join("")}</div>
+   <div class="swrow"><div class="bd"><b>Send anonymously</b>
+     <span>${fbAnon?"Your name is removed before anyone reads it":"Sent with your name, so the team can follow up with you"}</span></div>
+     <button class="sw ${fbAnon?"on":""}" onclick="togAnon()"></button></div>
+   <textarea id="fbtext" placeholder="What would you change?"></textarea>
+   <button class="btn pri" style="margin-top:12px" onclick="sendFb()">Send feedback</button>
+   <div id="fbdone"></div>
+   <h4>Program updates</h4>
+   <ul class="feed" id="feed" style="margin:0;padding:0"></ul>`;
+}
+function supportHTML(){
+  return `<div class="note" style="margin-bottom:14px">Something you need help with. Every request gets a
+    named owner and a response time, and Lighthouse chases it if nobody replies.</div>
+   <h4>Open for you</h4>
+   <div class="ticket"><div class="th"><span class="pill p-amber">Open 4 days</span><b>Artifactory group access</b></div>
+     <div class="kv"><span>Owner</span><b>IT service desk</b></div>
+     <div class="kv"><span>Chased by Lighthouse</span><b>Yesterday, 2nd time</b></div>
+     <div class="kv"><span>Also blocking</span><b>1 checklist item</b></div></div>
+   <h4>Raise something new</h4>
+   <div class="chipsel">${SP_CATS.map((c,i)=>
+     `<button class="${spCat===i?"on":""}" onclick="pickSp(${i})">${c}</button>`).join("")}</div>
+   <h4>How urgent</h4>
+   <div class="chipsel">${SP_URG.map((c,i)=>
+     `<button class="${spUrg===i?"on":""}" onclick="pickUrg(${i})">${c}</button>`).join("")}</div>
+   <textarea id="sptext" placeholder="What do you need?"></textarea>
+   <button class="btn pri" style="margin-top:12px" id="spsend" onclick="sendSp()">Send request</button>
+   <div id="spdone"></div>`;
+}
+function pickFb(i){fbCat=i;renderCi()}
+function togAnon(){fbAnon=!fbAnon;renderCi()}
+function pickSp(i){spCat=i;renderCi()}
+function pickUrg(i){spUrg=i;renderCi()}
+function sendFb(){
+  const t=document.getElementById("fbtext").value.trim();
+  if(fbCat===null||!t){toast("Pick what it is about and write a line first.");return}
+  document.getElementById("fbdone").innerHTML=`<div class="note" style="background:var(--green-soft);color:var(--green);margin-top:12px">
+    <b>Sent.</b> ${fbAnon?"Your name was removed before it left your device. It reaches the program team as part of the "+FB_CATS[fbCat]+" theme."
+    :"Filed under "+FB_CATS[fbCat]+". If two more people say something similar it reaches your pod lead as a theme."}</div>`;
+  toast("Feedback sent.");
+}
+function sendSp(){
+  const t=document.getElementById("sptext").value.trim();
+  if(spCat===null||spUrg===null||!t){toast("Pick a category, an urgency and write a line first.");return}
+  const owner=["IT service desk","Lin Tran, your buddy","Dana Mensah, program manager","HR service desk","Employee wellbeing"][spCat];
+  const eta=["3 working days","Next working day","Same day"][spUrg];
+  document.getElementById("spdone").innerHTML=`<div class="ticket" style="margin-top:14px;border-color:var(--green)">
+    <div class="th"><span class="pill p-green">Raised just now</span><b>${SP_CATS[spCat]}</b></div>
+    <div class="kv"><span>Owner</span><b>${owner}</b></div>
+    <div class="kv"><span>Response expected</span><b>${eta}</b></div>
+    <div class="kv"><span>If nobody replies</span><b>Lighthouse chases, then escalates</b></div></div>`;
+  toast("Request raised with "+owner+".");
+}
 const pulseQ=[
  {q:"How was your week?",o:["&#128546;","&#128533;","&#128528;","&#128578;","&#128512;"],face:true},
  {q:"Were you stuck on anything for more than a day?",o:["No","Yes, it's sorted","Yes, still stuck"]},
@@ -737,78 +995,159 @@ const pulseQ=[
 let picks=[null,null,null];
 function renderPulse(){
  const el=$("#pulse"); if(!el)return;
- el.innerHTML=pulseQ.map((p,i)=>`<div class="q"><label>${i+1}. ${p.q}</label>
-   <div class="opts">${p.o.map((o,j)=>`<button class="opt ${p.face?"face":""} ${picks[i]===j?"on":""}"
-     onclick="pick(${i},${j})">${o}</button>`).join("")}</div></div>`).join("")
-  +`<div class="q"><label>Anything you would change about the program? Optional.</label>
-     <textarea id="pcom" placeholder="Nobody has told me what a good term looks like here."></textarea></div>
+ let out="";
+ pulseQ.forEach((p,i)=>{
+   out+=`<div class="q"><label>${i+1}. ${p.q}</label><div class="opts">`;
+   p.o.forEach((o,j)=>{out+=`<button class="opt ${p.face?"face":""} ${picks[i]===j?"on":""}" onclick="pick(${i},${j})">${o}</button>`});
+   out+=`</div></div>`;
+ });
+ out+=`<div class="q"><label>Anything about this week? Optional.</label>
+   <textarea id="pcom" placeholder="For anything bigger than this week, use the Feedback tab"></textarea></div>
    <button class="btn pri" id="psend" onclick="submitPulse()">Send</button>`;
- const n=picks.filter(x=>x!==null).length;
- const b=$("#psend"); b.textContent=n===3?"Send and keep the streak":`Send, ${n} of 3 answered`; b.disabled=n<3;
+ el.innerHTML=out;
+ const n=picks.filter(x=>x!==null).length,b=$("#psend");
+ b.textContent=n===3?"Send and keep the streak":`Send, ${n} of 3 answered`; b.disabled=n<3;
 }
 function pick(i,j){picks[i]=j;renderPulse()}
 function submitPulse(){
  const c=$("#pcom").value.trim();
- streak++; xp+=120;
+ streak++; pts+=40;
  $("#hud-streak").innerHTML=streak+" &#128293;";
- $("#hud-xp").textContent=xp.toLocaleString();
+ $("#hud-pts").textContent=pts.toLocaleString();
  $("#pulse").innerHTML=`<div class="note" style="background:var(--green-soft);color:var(--green)">
-   <b>Sent in 19 seconds. Streak is now ${streak}.</b><br>${c?
-   "Your comment matched 13 others in the cohort, so it is above the 3 person threshold. It reaches your pod lead as a theme, not as your name.":
-   "Your answers rolled into the cohort. Nothing was attached to your name."}</div>`;
- toast("Check-in sent. A midterm survey would have found this in 8 weeks.");
+   <b>Sent. Your streak is now ${streak}.</b><br>${c?
+   "Your comment matched 13 others in your cohort, so it reaches your pod lead as a theme rather than as your name.":
+   "Your answers rolled into your cohort."}</div>`;
+ toast("Check-in sent. +40 points.");
 }
 function renderFeed(){
  const el=$("#feed"); if(!el)return;
- el.innerHTML=feed.map((f,i)=>`<li class="${f.f?"fresh":""}"><div class="dot">&#10003;</div>
+ el.innerHTML=feed.map(f=>`<li class="${f.f?"fresh":""}"><div class="dot">&#10003;</div>
    <div><p>${f.t}</p><span>${f.m}</span></div></li>`).join("");
 }
-function ask(q){
- if(!q||!q.trim())return;
- const hit=answers[q]||{a:"TIA does not have a grounded answer for this yet, so it goes to your buddy with your question attached, and the gap is logged for the program team.",m:"Unanswered questions are the most useful signal this tool collects."};
- const inp=$("#askin"); if(inp)inp.value="";
- $("#ans").innerHTML=`<div class="answer"><div style="font-weight:600;margin-bottom:6px">${q}</div>${hit.a}
-   <div class="meta">${hit.m}</div></div>`;
-}
+function reg(btn){btn.textContent="Registered";btn.disabled=true;toast("Registered in RBC Connect. Points are added once attendance is confirmed.")}
 function rate(n){
  document.querySelectorAll("#stars .star").forEach((s,i)=>s.classList.toggle("on",i<n));
- $("#rated").innerHTML=`<div class="note" style="margin-top:10px">Logged as <b>${n} of 5</b>. The cohort average for this session is 2.8 against 87% attendance, which is why the program is reworking the format instead of celebrating the turnout.</div>`;
+ $("#rated").innerHTML=`<div class="note" style="margin-top:10px">Thanks. Your rating goes to the team that runs the session.</div>`;
+}
+function swTog(id,label){
+ const e=document.getElementById(id);e.classList.toggle("on");
+ const on=e.classList.contains("on");
+ if(id==="sw1"){ptsOnboarding=on;recalcPts()}
+ toast(label+(on?" turned on":" turned off"));
+}
+function recalcPts(){
+ let base=evts*50+40*0;
+ let ob=0;checklist.forEach(g=>g.items.forEach(i=>{if(i.on)ob+=i.p}));
+ pts=evts*50+(ptsOnboarding?ob:0)+(streak-5)*40+10;
+ $("#hud-pts").textContent=pts.toLocaleString();
 }
 
 /* ================= PROGRAM ================= */
+const AVC=[["#eaf1fd","#1565d8"],["#e8f5f0","#0f7156"],["#fef6e7","#b54708"],["#f0ecfc","#5b3fb5"],["#fdecea","#b3261e"]];
+function ini(n){return n.split(" ").map(w=>w[0]).join("").slice(0,2)}
+function peopleList(list){
+  return list.map((p,i)=>{
+    const c=AVC[i%AVC.length];
+    return `<div class="person"><div class="pav" style="background:${c[0]};color:${c[1]}">${ini(p.n)}</div>
+      <div style="flex:1"><b>${p.n}</b><span>${p.p} &middot; ${p.d}</span></div>
+      <button class="btn sm" onclick="ping(this,'${p.m}')">Ping ${p.m.split(" ")[0]}</button></div>`;
+  }).join("");
+}
+function ping(btn,mentor){btn.textContent="Emailed";btn.disabled=true;toast("Email sent to "+mentor+", with what Lighthouse noticed and a suggested next step.")}
+function pingAll(btn,list){
+  btn.textContent="All emailed";btn.disabled=true;
+  document.querySelectorAll("#d-body .person .btn").forEach(b=>{b.textContent="Emailed";b.disabled=true});
+  toast(list+" mentors emailed.");
+}
+function openSig(i){
+  const g=sigs[i];
+  openPanel(g.n,g.who.length+" students outside the cohort median of "+g.med,
+    `<div class="note" style="margin-bottom:14px">${g.out}. Each mentor gets an email with what Lighthouse noticed and a suggested next step. They reply to that email, they do not log in here.</div>
+     <button class="btn pri" style="margin-bottom:6px" onclick="pingAll(this,'${g.who.length}')">Email all ${g.who.length} mentors</button>
+     <h4>Students</h4>${peopleList(g.who)}`);
+}
 const sigs=[
- {n:"Days to first merged PR",med:"11 days",w:72,out:"4 people past 21 days",src:"GitHub Enterprise",c:"var(--azure)"},
- {n:"Time a question stays open",med:"3.2 hours",w:58,out:"6 people past 24 hours",src:"Slack metadata",c:"var(--azure)"},
- {n:"Days since last mentor 1:1",med:"9 days",w:88,out:"5 people past 21 days",src:"Outlook calendar",c:"var(--red)"},
- {n:"Onboarding checklist stalled",med:"14% of cohort",w:45,out:"6 people stuck on the same item",src:"Ramp checklist",c:"var(--amber)"},
- {n:"Same ticket type 4 weeks running",med:"18% of cohort",w:34,out:"5 people, no new work type",src:"Jira",c:"var(--amber)"},
- {n:"Check-in streak kept",med:"81%",w:81,out:"vs 34% on the midterm survey",src:"Ramp",c:"var(--green)"}
+ {n:"Weeks since last check-in",med:"0.4 weeks",w:30,out:"5 students past 3 weeks",src:"Lighthouse",c:"var(--red)",
+  who:[{n:"Jordan K.",p:"New grad, Pod 2",d:"Last check-in 21 days ago",m:"Priya Shah"},
+       {n:"Marcus L.",p:"Co-op, Pod 7",d:"Last check-in 24 days ago",m:"Omar Haddad"},
+       {n:"Dev P.",p:"Co-op, Pod 3",d:"Last check-in 22 days ago",m:"Yuki Tanaka"},
+       {n:"Sara N.",p:"New grad, Pod 1",d:"Last check-in 26 days ago",m:"Marcus Hale"},
+       {n:"Tomas R.",p:"Co-op, Pod 5",d:"Last check-in 29 days ago",m:"Lin Chen"}]},
+ {n:"Events attended this term",med:"6 of 9",w:67,out:"7 students attended 1 or none",src:"RBC Connect",c:"var(--amber)",
+  who:[{n:"Jordan K.",p:"New grad, Pod 2",d:"1 of 9 events",m:"Priya Shah"},
+       {n:"Marcus L.",p:"Co-op, Pod 7",d:"0 of 9 events",m:"Omar Haddad"},
+       {n:"Wei Z.",p:"New grad, Pod 4",d:"1 of 9 events",m:"Omar Haddad"},
+       {n:"Noor F.",p:"Co-op, Pod 6",d:"1 of 9 events",m:"Dana Mensah"},
+       {n:"Tomas R.",p:"Co-op, Pod 5",d:"0 of 9 events",m:"Lin Chen"},
+       {n:"Ethan G.",p:"Co-op, Pod 1",d:"1 of 9 events",m:"Yuki Tanaka"},
+       {n:"Luis M.",p:"New grad, Pod 3",d:"1 of 9 events",m:"Lin Chen"}]},
+ {n:"Days since last mentor meeting",med:"9 days",w:88,out:"5 students past 21 days",src:"Webex and calendar",c:"var(--red)",
+  who:[{n:"Jordan K.",p:"New grad, Pod 2",d:"41 days since last meeting",m:"Priya Shah"},
+       {n:"Marcus L.",p:"Co-op, Pod 7",d:"33 days since last meeting",m:"Omar Haddad"},
+       {n:"Amara O.",p:"Co-op, Pod 4",d:"24 days since last meeting",m:"Priya Shah"},
+       {n:"Aisha B.",p:"Co-op, Pod 2",d:"26 days since last meeting",m:"Priya Shah"},
+       {n:"Sara N.",p:"New grad, Pod 1",d:"31 days since last meeting",m:"Marcus Hale"}]},
+ {n:"Onboarding checklist complete",med:"78%",w:78,out:"6 students stuck on the same item",src:"Lighthouse",c:"var(--amber)",
+  who:[{n:"Amara O.",p:"Co-op, Pod 4",d:"Artifactory access, 4 days",m:"Priya Shah"},
+       {n:"Dev P.",p:"Co-op, Pod 3",d:"Artifactory access, 6 days",m:"Yuki Tanaka"},
+       {n:"Ethan G.",p:"Co-op, Pod 1",d:"Artifactory access, 3 days",m:"Yuki Tanaka"},
+       {n:"Noor F.",p:"Co-op, Pod 6",d:"Artifactory access, 8 days",m:"Dana Mensah"},
+       {n:"Wei Z.",p:"New grad, Pod 4",d:"Artifactory access, 5 days",m:"Omar Haddad"},
+       {n:"Luis M.",p:"New grad, Pod 3",d:"Artifactory access, 2 days",m:"Lin Chen"}]},
+ {n:"Goals set with a mentor",med:"71%",w:71,out:"12 students have none",src:"Lighthouse",c:"var(--amber)",
+  who:[{n:"Jordan K.",p:"New grad, Pod 2",d:"No goals set",m:"Priya Shah"},
+       {n:"Marcus L.",p:"Co-op, Pod 7",d:"No goals set",m:"Omar Haddad"},
+       {n:"Tomas R.",p:"Co-op, Pod 5",d:"No goals set",m:"Lin Chen"},
+       {n:"Sara N.",p:"New grad, Pod 1",d:"No goals set",m:"Marcus Hale"},
+       {n:"Priya R.",p:"Co-op, Pod 8",d:"No goals set",m:"Marcus Hale"},
+       {n:"Luis M.",p:"New grad, Pod 3",d:"No goals set",m:"Lin Chen"}]},
+ {n:"Support requests open past 48 hours",med:"1 of 3",w:33,out:"Access request, open 4 days",src:"Lighthouse",c:"var(--amber)",
+  who:[{n:"Amara O.",p:"Co-op, Pod 4",d:"Artifactory access, open 4 days",m:"Priya Shah"}]},
+ {n:"Check-ins completed this week",med:"81%",w:81,out:"8 students missed the window",src:"Lighthouse",c:"var(--green)",
+  who:[{n:"Jordan K.",p:"New grad, Pod 2",d:"Missed, 4th week running",m:"Priya Shah"},
+       {n:"Marcus L.",p:"Co-op, Pod 7",d:"Missed, 4th week running",m:"Omar Haddad"},
+       {n:"Dev P.",p:"Co-op, Pod 3",d:"Missed this week",m:"Yuki Tanaka"},
+       {n:"Sara N.",p:"New grad, Pod 1",d:"Missed, 3rd week running",m:"Marcus Hale"},
+       {n:"Tomas R.",p:"Co-op, Pod 5",d:"Missed, 5th week running",m:"Lin Chen"}]}
+];
+const pool=[
+ {n:"Marcus Hale",r:"VP, Risk Technology",m:"Signed up 2 days ago"},
+ {n:"Yuki Tanaka",r:"Senior Manager, Data Platform",m:"Signed up 3 days ago"},
+ {n:"Omar Haddad",r:"Director, Cloud Engineering",m:"Signed up 5 days ago"}
 ];
 const flags=[
- {id:"f1",sev:"hi",sevl:"Act this week",title:"3 co-ops, 21+ days with no mentor 1:1, and all three say they cannot tell what good looks like",
-  ev:[["Calendar","Last mentor 1:1: 24, 26 and 31 days ago"],["Check-in","All three picked \"not really\" on what good looks like, 2 weeks running"],
-      ["Jira","Same ticket type 4 weeks running for 2 of the 3"],["Threshold","3 similar comments, so the pod lead sees this by name"]],
-  act:"Book a 20 minute 1:1 with each this week and use the 5 question script. Nothing else.",
-  own:"Pod lead, Capital Markets Tech",sla:"3 days",
-  loop:"Your mentor 1:1 was rebooked after 24 days without one. A pod lead saw the gap before you had to raise it."},
- {id:"f2",sev:"md",sevl:"Act in 2 days",title:"1 co-op, checklist item blocked 4 days, 2 questions still open, first merge slipped to day 24",
-  ev:[["Ramp","Artifactory access unticked for 4 days"],["GitHub","First merged PR at day 24, cohort median is 11"],
-      ["TIA","Asked the same access question 3 times"],["Threshold","Single person, so the pod lead sees signals, not the comment"]],
-  act:"Grant cmt-build access today, then pair 45 minutes on the open ticket.",
-  own:"Onboarding buddy",sla:"2 days",
-  loop:"Your access was granted and 45 minutes of pairing is booked for tomorrow."},
- {id:"f3",sev:"lo",sevl:"Act in 10 days",title:"9 students cannot name a next step at RBC, and 6 named an interest no nearby team covers",
-  ev:[["Ramp","9 of 41 picked \"not visible\" or \"not sure\" on their path"],["Ramp","6 named data, ML or product, none represented in this pod"],
+ {id:"f1",sev:"hi",sevl:"Act this week",title:"2 students with no activity for 14 days",
+  ev:[["Check-ins","Last one 21 days ago for both"],["Events","1 and 0 attended this term"],
+      ["Meetings","41 and 33 days since a mentor meeting"],["Goals","Neither has goals set"]],
+  people:[{n:"Jordan K.",p:"New grad, Pod 2",d:"No check-in 21 days, 1 of 9 events, 41 days since a meeting",m:"Priya Shah"},
+          {n:"Marcus L.",p:"Co-op, Pod 7",d:"No check-in 24 days, 0 of 9 events, 33 days since a meeting",m:"Omar Haddad"}],
+  act:"Email each mentor so they book 20 minutes this week and ask what is getting in the way.",
+  own:"Assigned mentors",sla:"3 days"},
+ {id:"f2",sev:"hi",sevl:"Act this week",title:"3 students, 21 or more days with no mentor meeting",
+  ev:[["Meetings","24, 26 and 31 days since the last one"],["Check-ins","All three answered &quot;not really&quot; on knowing what good looks like"],
+      ["Threshold","3 similar comments, so this is visible by name"]],
+  people:[{n:"Amara O.",p:"Co-op, Pod 4",d:"24 days, and says she cannot tell what good looks like",m:"Priya Shah"},
+          {n:"Aisha B.",p:"Co-op, Pod 2",d:"26 days, same answer two weeks running",m:"Priya Shah"},
+          {n:"Sara N.",p:"New grad, Pod 1",d:"31 days, same answer two weeks running",m:"Marcus Hale"}],
+  act:"Book a 20 minute meeting with each this week.",
+  own:"Assigned mentors",sla:"3 days"},
+ {id:"f3",sev:"md",sevl:"Act in 2 days",title:"1 student blocked on the same checklist item for 4 days",
+  ev:[["Checklist","Artifactory access unticked since Nov 16"],["Delivery","First merge at day 24, cohort median is 11"],
+      ["Questions","Asked about access three times"]],
+  act:"Grant cmt-build access, then pair for 45 minutes on the open ticket.",
+  own:"Onboarding buddy",sla:"2 days"},
+ {id:"f4",sev:"lo",sevl:"Act in 10 days",title:"9 students cannot name a next step at RBC",
+  ev:[["Profiles","6 named data, ML or product, none covered by their current team"],
       ["History","This pattern preceded 4 of last year's 7 declined return offers"]],
-  act:"Run one internal mobility office hour and invite the 3 teams they named.",
-  own:"Early Talent program manager",sla:"10 days",
-  loop:"An internal mobility office hour is booked for Dec 2. The three teams you named will be there."}
+  act:"Run an internal mobility office hour and invite the 3 teams they named.",
+  own:"Early Talent program manager",sla:"10 days"}
 ];
 const themes=[
  {n:41,u:"questions",t:"Access and environment setup",p:"19 students. Fix: add a team tooling page to the onboarding pack.",st:"Shipped",c:"p-green"},
- {n:28,u:"mentions",t:"Nobody told me what good looks like",p:"14 students. Fix: one page of term expectations, handed over in week 1.",st:"Proposed",c:"p-amber"},
- {n:23,u:"questions",t:"How do I get a return offer",p:"17 students. Fix: publish the return-offer criteria.",st:"In review",c:"p-blue"},
- {n:17,u:"questions",t:"Who do I ask when I'm stuck",p:"11 students. Fix: name a buddy for the day to day, not just a mentor for the term.",st:"Proposed",c:"p-amber"}
+ {n:28,u:"mentions",t:"Not clear what good looks like",p:"14 students. Fix: one page of term expectations in week 1.",st:"Proposed",c:"p-amber"},
+ {n:23,u:"questions",t:"How return offers are decided",p:"17 students. Fix: publish the criteria.",st:"In review",c:"p-blue"},
+ {n:17,u:"questions",t:"Who to ask when stuck",p:"11 students. Fix: name a buddy as well as a mentor.",st:"Proposed",c:"p-amber"}
 ];
 const events=[
  {n:"Intro tech session",r:62,a:58,h:4.4,read:"Keep",c:"p-green"},
@@ -817,34 +1156,39 @@ const events=[
  {n:"Executive fireside",r:70,a:61,h:2.8,read:"Rework format",c:"p-red"}
 ];
 
-$("#sigs").innerHTML=sigs.map(s=>`<div class="sig">
+$("#sigs").innerHTML=sigs.map((s,i)=>`<div class="sig">
   <div class="top"><span class="nm">${s.n}</span><span class="pill p-grey">${s.med}</span><span class="src">${s.src}</span></div>
-  <div class="track"><i style="width:${s.w}%;background:${s.c}"></i><b style="left:72%"></b></div>
-  <div class="sigfoot"><span>${s.out}</span><span>target marker</span></div></div>`).join("");
+  <div class="track"><i style="width:${s.w}%;background:${s.c}"></i></div>
+  <div class="sigfoot"><span>${s.out}</span>
+    <button class="btn sm" onclick="openSig(${i})">See who</button></div></div>`).join("");
+
+$("#pool").innerHTML=pool.map((p,i)=>`<div class="person">
+  <div class="pav" style="background:var(--line-2);color:var(--ink-3)">${p.n.split(" ").map(w=>w[0]).join("")}</div>
+  <div style="flex:1"><b>${p.n}</b><span>${p.r} &middot; ${p.m}</span></div>
+  <button class="btn sm" onclick="this.textContent='Approved';this.disabled=true;toast('${p.n} added to the mentor pool.')">Approve</button>
+  </div>`).join("");
 
 let actioned=0;
 $("#flags").innerHTML=flags.map(f=>`<div class="flag ${f.sev}" id="${f.id}">
   <div class="hd"><span class="pill ${f.sev==="hi"?"p-red":f.sev==="md"?"p-amber":"p-blue"}">${f.sevl}</span><h4>${f.title}</h4></div>
   <div class="ev">${f.ev.map(e=>`<div><i>${e[0]}</i>${e[1]}</div>`).join("")}</div>
-  <div class="act"><div class="t">PRESCRIBED ACTION</div><p>${f.act}</p>
+  ${f.people?`<div style="border:1px solid var(--line);border-radius:10px;padding:2px 12px;margin-top:10px">${peopleList(f.people)}</div>`:""}
+  <div class="act"><div class="t">ACTION</div><p>${f.act}</p>
     <div class="row"><span>Owner: <b>${f.own}</b></span><span>Due in ${f.sla}</span>
     <button class="btn sm pri" onclick="doAct('${f.id}')">Mark actioned</button></div></div></div>`).join("");
 
 function doAct(id){
  const f=flags.find(x=>x.id===id),el=document.getElementById(id);
  el.classList.add("actioned");
- el.querySelector(".act").innerHTML=`<div class="t" style="color:var(--green)">ACTIONED, LOOP CLOSED</div>
-   <p>${f.act}</p><div class="row"><span>The students were told what changed, in their own feed.</span></div>`;
+ el.querySelector(".act").innerHTML=`<div class="t" style="color:var(--green)">ACTIONED</div><p>${f.act}</p>
+   <div class="row"><span>Students were told what changed.</span></div>`;
  actioned++;
  const pct=68+actioned*3;
  $("#kpi-act").innerHTML=pct+'<small>%</small>';
  $("#kpi-act-bar").style.width=pct+"%";
  if(pct>=74)$("#kpi-act-bar").style.background="var(--green)";
  $("#kpi-act-d").textContent=(17+actioned)+" of "+(25+actioned)+" flags this month";
- feed.forEach(x=>x.f=false);
- feed.unshift({t:f.loop,m:"Just now. Closed from the program side, you did not have to chase it.",f:true});
- renderFeed();
- toast("Loop closed. Switch to Student, open the Check-in Station, and it is at the top of the feed.","Switch",1);
+ toast(id==="f1"?"Marked actioned. The assigned mentors have been emailed.":"Marked actioned.");
 }
 
 $("#themes").innerHTML=themes.map(t=>`<div class="theme">
@@ -859,29 +1203,32 @@ $("#events").innerHTML=events.map(e=>{
   <td><span class="pill ${e.c}">${e.read}</span></td></tr>`}).join("");
 
 /* ================= PLUMBING ================= */
+const WHO={
+ s:'<div class="av">AO</div><div><b>Amara O.</b><br><span>Co-op, Pod 4</span></div>',
+ p:'<div class="av" style="background:var(--azure-soft);color:var(--azure)">DM</div><div><b>Dana Mensah</b><br><span>Early Talent program</span></div>'
+};
 function setView(v){
- $("#view-s").classList.toggle("hide",v!=="s");
- $("#view-p").classList.toggle("hide",v!=="p");
- $("#tab-s").classList.toggle("on",v==="s");
- $("#tab-p").classList.toggle("on",v==="p");
- $("#who").innerHTML=v==="s"
-  ?'<div class="av">AO</div><div><b>Amara O.</b><br><span>Co-op, Pod 4</span></div>'
-  :'<div class="av" style="background:var(--azure-soft);color:var(--azure)">DM</div><div><b>Dana M.</b><br><span>Early Talent program</span></div>';
- try{location.hash=v==="s"?"student":"program"}catch(e){}
+ ["s","p"].forEach(k=>{
+   document.getElementById("view-"+k).classList.toggle("hide",k!==v);
+   document.getElementById("tab-"+k).classList.toggle("on",k===v);
+ });
+ $("#who").innerHTML=WHO[v];
+ try{location.hash={s:"student",p:"program"}[v]}catch(e){}
  window.scrollTo({top:0});
 }
 let tt;
-function toast(m,label,goStudent){
+function toast(m,label,fn){
  clearTimeout(tt);
  $("#toast-m").innerHTML=m;
  const b=$("#toast").querySelector("button");
  b.textContent=label||"Close";
- b.onclick=goStudent?()=>{setView("s");openB("checkin");hideToast()}:hideToast;
+ b.onclick=fn?()=>{fn();hideToast()}:hideToast;
  $("#toast").classList.add("show");
  tt=setTimeout(hideToast,6500);
 }
 function hideToast(){$("#toast").classList.remove("show")}
-setView(location.hash==="#program"?"p":"s");
+const H0=location.hash==="#program"?"p":"s";
+setView(H0);
 window.addEventListener("hashchange",()=>setView(location.hash==="#program"?"p":"s"));
 </script>
 </body>
